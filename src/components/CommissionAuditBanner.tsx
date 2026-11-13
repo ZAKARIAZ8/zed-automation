@@ -1,361 +1,317 @@
-import React from 'react';
-import { Calculator, ArrowRight, SlidersHorizontal } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowUpRight, Calculator, SlidersHorizontal } from 'lucide-react';
 import {
-  LeakageEstimatorInput,
-  calculateBrokerageLeakage,
+  AUDIT_TOOL_URL,
+  calculateCommissionLeakage,
   formatCurrency,
 } from '../utils/commissionCalculator';
 
-interface CommissionAuditBannerProps {
-  estimatorInput: LeakageEstimatorInput;
-  onChangeEstimatorInput: (next: LeakageEstimatorInput) => void;
-  onOpenAuditModal: () => void;
+interface BrokeragePreset {
+  label: string;
+  monthlyLeads: number;
+  avgHomePrice: number;
+  responseTimeMinutes: number;
+  deadCrmContacts: number;
 }
 
-export const CommissionAuditBanner: React.FC<CommissionAuditBannerProps> = ({
-  estimatorInput,
-  onChangeEstimatorInput,
-  onOpenAuditModal,
-}) => {
-  const output = calculateBrokerageLeakage(estimatorInput);
+const PRESETS: BrokeragePreset[] = [
+  {
+    label: 'High-Volume Realtor ($8M+)',
+    monthlyLeads: 65,
+    avgHomePrice: 485000,
+    responseTimeMinutes: 12,
+    deadCrmContacts: 1200,
+  },
+  {
+    label: 'Growing Realty Team ($25M+)',
+    monthlyLeads: 160,
+    avgHomePrice: 550000,
+    responseTimeMinutes: 9,
+    deadCrmContacts: 3800,
+  },
+  {
+    label: 'Multi-Agent Brokerage ($75M+)',
+    monthlyLeads: 420,
+    avgHomePrice: 640000,
+    responseTimeMinutes: 16,
+    deadCrmContacts: 9500,
+  },
+];
 
-  const presets = [
-    {
-      label: 'Boutique Team (75 Deals/Yr)',
-      annualTransactions: 75,
-      avgSalePrice: 420000,
-      avgCommissionPercent: 2.75,
-      outboundReferrals: 10,
-    },
-    {
-      label: 'Mid-Size Brokerage (180 Deals/Yr)',
-      annualTransactions: 180,
-      avgSalePrice: 450000,
-      avgCommissionPercent: 2.75,
-      outboundReferrals: 18,
-    },
-    {
-      label: 'Mega Regional Office (650 Deals/Yr)',
-      annualTransactions: 650,
-      avgSalePrice: 540000,
-      avgCommissionPercent: 2.65,
-      outboundReferrals: 55,
-    },
-  ];
+export const CommissionAuditBanner: React.FC = () => {
+  const [monthlyLeads, setMonthlyLeads] = useState<number>(160);
+  const [avgHomePrice, setAvgHomePrice] = useState<number>(550000);
+  const [responseTimeMinutes, setResponseTimeMinutes] = useState<number>(9);
+  const [deadCrmContacts, setDeadCrmContacts] = useState<number>(3800);
+  const [activePreset, setActivePreset] = useState<string>('Growing Realty Team ($25M+)');
+
+  const auditMetrics = calculateCommissionLeakage({
+    monthlyLeads,
+    avgHomePrice,
+    commissionRatePercent: 2.75,
+    responseTimeMinutes,
+    deadCrmContacts,
+  });
+
+  const applyPreset = (preset: BrokeragePreset) => {
+    setActivePreset(preset.label);
+    setMonthlyLeads(preset.monthlyLeads);
+    setAvgHomePrice(preset.avgHomePrice);
+    setResponseTimeMinutes(preset.responseTimeMinutes);
+    setDeadCrmContacts(preset.deadCrmContacts);
+  };
 
   return (
-    <section
-      id="calculator"
-      className="py-20 bg-[#080A0F] border-b border-white/10 relative overflow-hidden"
-    >
-      <div className="max-w-7xl mx-auto px-6 space-y-10">
-        {/* Section Heading */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-          <div className="space-y-3 max-w-3xl">
-            <div className="flex items-center gap-2 text-xs font-medium text-emerald-400">
-              <Calculator className="w-4 h-4 shrink-0" />
-              <span>Interactive Module 01 · Instant GCI Calculator</span>
-              <span aria-hidden="true" className="text-slate-600">·</span>
-              <span className="text-slate-400 font-mono">Real-Time Actuarial Model</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              The 30-Second Brokerage Leakage Estimator
-            </h2>
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-              Calibrate the 4 sliders below to your brokerage&apos;s annual production volume to see your projected split/cap overpayments and uncollected referral fees.
-            </p>
-          </div>
+    <section id="roi-audit" className="py-24 bg-[#090A0F] border-b border-white/10 relative overflow-hidden">
+      {/* Subtle Ambient Emerald & Indigo Glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[960px] h-[460px] bg-gradient-to-r from-emerald-500/15 via-indigo-500/15 to-emerald-500/10 blur-3xl"
+      />
 
-          {/* Quick Brokerage Profile Presets */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-400 flex items-center gap-1 mr-1">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-400" />
-              Presets:
-            </span>
-            {presets.map((p) => {
-              const isMatch =
-                estimatorInput.annualTransactions === p.annualTransactions &&
-                estimatorInput.avgSalePrice === p.avgSalePrice;
-              return (
-                <button
-                  key={p.label}
-                  type="button"
-                  onClick={() =>
-                    onChangeEstimatorInput({
-                      annualTransactions: p.annualTransactions,
-                      avgSalePrice: p.avgSalePrice,
-                      avgCommissionPercent: p.avgCommissionPercent,
-                      outboundReferrals: p.outboundReferrals,
-                    })
-                  }
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                    isMatch
-                      ? 'bg-indigo-500/20 border-indigo-400 text-indigo-200'
-                      : 'bg-[#111520] border-white/10 text-slate-300 hover:text-white'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Standout Glowing High-Contrast Card */}
+        <div className="rounded-3xl backdrop-blur-xl bg-gradient-to-b from-[#131724] to-[#0D1018] border border-emerald-500/30 p-8 sm:p-12 shadow-[0_0_70px_rgba(16,185,129,0.12)]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            {/* Left Column: Audit Narrative & Interactive Inputs */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="flex items-center gap-2 text-xs font-medium text-emerald-400">
+                <Calculator className="w-4 h-4 shrink-0" />
+                <span>Interactive Commission Leakage Diagnostic</span>
+                <span aria-hidden="true" className="text-slate-600">·</span>
+                <span className="text-slate-400 font-mono">2.75% Avg Side GCI</span>
+              </div>
 
-        {/* Main Calculator Grid */}
-        <div className="rounded-2xl bg-[#111520] border border-white/10 p-6 sm:p-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
-            {/* Left Column: 4 Live Range Sliders */}
-            <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
-              {/* Slider 1: Annual Closed Transactions */}
-              <div className="p-5 rounded-xl bg-[#080A0F] border border-white/10 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <label
-                    htmlFor="slider-annual-deals"
-                    className="font-semibold text-white"
-                  >
-                    1. Annual Closed Transactions
-                  </label>
-                  <span
-                    data-testid="val-annual-deals"
-                    className="font-mono font-bold text-indigo-400 text-base"
-                  >
-                    {estimatorInput.annualTransactions.toLocaleString()} deals/yr
-                  </span>
-                </div>
-                <input
-                  id="slider-annual-deals"
-                  type="range"
-                  min={20}
-                  max={1500}
-                  step={10}
-                  value={estimatorInput.annualTransactions}
-                  onChange={(e) =>
-                    onChangeEstimatorInput({
-                      ...estimatorInput,
-                      annualTransactions: Number(e.target.value),
-                    })
-                  }
-                  className="w-full accent-indigo-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[11px] font-mono text-slate-400">
-                  <span>20 deals/yr</span>
-                  <span>750 deals/yr</span>
-                  <span>1,500 deals/yr</span>
+              <h2
+                className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight"
+                style={{ textWrap: 'balance' }}
+              >
+                How Much GCI Did Your Brokerage Leave on the Table Last Quarter?
+              </h2>
+
+              <p className="text-base text-slate-300 leading-relaxed">
+                Before you spend another dollar on Zillow Premier Agent or Facebook Ads, use our interactive Commission Audit Tool. Enter your monthly lead volume, average home price, and current response time to see your exact dollar leakage—and how much our AI infrastructure can recover in the next 30 days.
+              </p>
+
+              {/* Preset Selector Buttons */}
+              <div className="space-y-2 pt-2">
+                <span className="text-xs font-medium text-slate-400 flex items-center gap-1.5">
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-400" />
+                  Select Brokerage Profile or Adjust Sliders Below:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {PRESETS.map((preset) => {
+                    const isSelected = activePreset === preset.label;
+                    return (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => applyPreset(preset)}
+                        className={`px-3.5 py-2 text-xs font-semibold rounded-lg border transition-colors whitespace-nowrap shrink-0 ${
+                          isSelected
+                            ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200'
+                            : 'bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Slider 2: Average Home Sale Price ($) */}
-              <div className="p-5 rounded-xl bg-[#080A0F] border border-white/10 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <label
-                    htmlFor="slider-sale-price"
-                    className="font-semibold text-white"
-                  >
-                    2. Average Home Sale Price ($)
-                  </label>
-                  <span
-                    data-testid="val-sale-price"
-                    className="font-mono font-bold text-indigo-400 text-base"
-                  >
-                    {formatCurrency(estimatorInput.avgSalePrice)}
-                  </span>
+              {/* Interactive Sliders */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+                <div className="p-4 rounded-xl bg-[#090A0F]/80 border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <label htmlFor="slider-leads" className="font-medium text-slate-300">
+                      Monthly Inbound Leads
+                    </label>
+                    <span className="font-mono font-bold text-emerald-400">
+                      {monthlyLeads} leads/mo
+                    </span>
+                  </div>
+                  <input
+                    id="slider-leads"
+                    type="range"
+                    min={20}
+                    max={800}
+                    step={10}
+                    value={monthlyLeads}
+                    onChange={(e) => {
+                      setMonthlyLeads(Number(e.target.value));
+                      setActivePreset('Custom');
+                    }}
+                    className="w-full accent-emerald-400 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[11px] font-mono text-slate-500">
+                    <span>20/mo</span>
+                    <span>400/mo</span>
+                    <span>800/mo</span>
+                  </div>
                 </div>
-                <input
-                  id="slider-sale-price"
-                  type="range"
-                  min={200000}
-                  max={1500000}
-                  step={25000}
-                  value={estimatorInput.avgSalePrice}
-                  onChange={(e) =>
-                    onChangeEstimatorInput({
-                      ...estimatorInput,
-                      avgSalePrice: Number(e.target.value),
-                    })
-                  }
-                  className="w-full accent-indigo-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[11px] font-mono text-slate-400">
-                  <span>$200,000</span>
-                  <span>$850,000</span>
-                  <span>$1,500,000</span>
-                </div>
-              </div>
 
-              {/* Slider 3: Average Gross Commission % (Per Side) */}
-              <div className="p-5 rounded-xl bg-[#080A0F] border border-white/10 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <label
-                    htmlFor="slider-comm-percent"
-                    className="font-semibold text-white"
-                  >
-                    3. Average Gross Commission % (Per Side)
-                  </label>
-                  <span
-                    data-testid="val-comm-percent"
-                    className="font-mono font-bold text-indigo-400 text-base"
-                  >
-                    {estimatorInput.avgCommissionPercent.toFixed(2)}%
-                  </span>
+                <div className="p-4 rounded-xl bg-[#090A0F]/80 border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <label htmlFor="slider-price" className="font-medium text-slate-300">
+                      Average Home Price
+                    </label>
+                    <span className="font-mono font-bold text-emerald-400">
+                      {formatCurrency(avgHomePrice)}
+                    </span>
+                  </div>
+                  <input
+                    id="slider-price"
+                    type="range"
+                    min={250000}
+                    max={1500000}
+                    step={25000}
+                    value={avgHomePrice}
+                    onChange={(e) => {
+                      setAvgHomePrice(Number(e.target.value));
+                      setActivePreset('Custom');
+                    }}
+                    className="w-full accent-emerald-400 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[11px] font-mono text-slate-500">
+                    <span>$250k</span>
+                    <span>$850k</span>
+                    <span>$1.5M</span>
+                  </div>
                 </div>
-                <input
-                  id="slider-comm-percent"
-                  type="range"
-                  min={2.0}
-                  max={3.5}
-                  step={0.05}
-                  value={estimatorInput.avgCommissionPercent}
-                  onChange={(e) =>
-                    onChangeEstimatorInput({
-                      ...estimatorInput,
-                      avgCommissionPercent: Number(e.target.value),
-                    })
-                  }
-                  className="w-full accent-indigo-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[11px] font-mono text-slate-400">
-                  <span>2.00%</span>
-                  <span>2.75%</span>
-                  <span>3.50%</span>
-                </div>
-              </div>
 
-              {/* Slider 4: Outbound Referrals Sent per Year */}
-              <div className="p-5 rounded-xl bg-[#080A0F] border border-white/10 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <label
-                    htmlFor="slider-outbound-referrals"
-                    className="font-semibold text-white"
-                  >
-                    4. Outbound Referrals Sent per Year
-                  </label>
-                  <span
-                    data-testid="val-outbound-referrals"
-                    className="font-mono font-bold text-indigo-400 text-base"
-                  >
-                    {estimatorInput.outboundReferrals} referrals/yr
-                  </span>
+                <div className="p-4 rounded-xl bg-[#090A0F]/80 border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <label htmlFor="slider-response" className="font-medium text-slate-300">
+                      Current Lead Response Time
+                    </label>
+                    <span className="font-mono font-bold text-rose-400">
+                      {responseTimeMinutes} mins
+                    </span>
+                  </div>
+                  <input
+                    id="slider-response"
+                    type="range"
+                    min={1}
+                    max={60}
+                    step={1}
+                    value={responseTimeMinutes}
+                    onChange={(e) => {
+                      setResponseTimeMinutes(Number(e.target.value));
+                      setActivePreset('Custom');
+                    }}
+                    className="w-full accent-indigo-400 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[11px] font-mono text-slate-500">
+                    <span>1m</span>
+                    <span>15m</span>
+                    <span>60m+</span>
+                  </div>
                 </div>
-                <input
-                  id="slider-outbound-referrals"
-                  type="range"
-                  min={5}
-                  max={100}
-                  step={1}
-                  value={estimatorInput.outboundReferrals}
-                  onChange={(e) =>
-                    onChangeEstimatorInput({
-                      ...estimatorInput,
-                      outboundReferrals: Number(e.target.value),
-                    })
-                  }
-                  className="w-full accent-indigo-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[11px] font-mono text-slate-400">
-                  <span>5 deals</span>
-                  <span>50 deals</span>
-                  <span>100 deals</span>
+
+                <div className="p-4 rounded-xl bg-[#090A0F]/80 border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <label htmlFor="slider-crm" className="font-medium text-slate-300">
+                      Unworked Past CRM Leads
+                    </label>
+                    <span className="font-mono font-bold text-indigo-300">
+                      {deadCrmContacts.toLocaleString()} contacts
+                    </span>
+                  </div>
+                  <input
+                    id="slider-crm"
+                    type="range"
+                    min={500}
+                    max={15000}
+                    step={500}
+                    value={deadCrmContacts}
+                    onChange={(e) => {
+                      setDeadCrmContacts(Number(e.target.value));
+                      setActivePreset('Custom');
+                    }}
+                    className="w-full accent-indigo-400 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[11px] font-mono text-slate-500">
+                    <span>500</span>
+                    <span>7,500</span>
+                    <span>15,000</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Dynamic Real-Time Output Panel */}
-            <div className="lg:col-span-5 rounded-xl bg-[#080A0F] border border-white/10 p-6 sm:p-8 flex flex-col justify-between space-y-6">
-              <div className="space-y-6">
-                <div className="pb-4 border-b border-white/10 flex items-center justify-between">
+            {/* Right Column: Live Calculated Leakage Readout & Primary CTA */}
+            <div className="lg:col-span-5 rounded-2xl bg-[#090A0F] border border-white/10 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
-                    Dynamic Real-Time Audit Readout
+                    Estimated Brokerage Leakage
                   </span>
-                  <span className="text-xs font-mono text-slate-400">
-                    Vol: {formatCurrency(output.totalAnnualVolume)}
-                  </span>
-                </div>
-
-                {/* Output 1: Total Annual Gross Commission (GCI) */}
-                <div className="flex items-baseline justify-between gap-4 py-2 border-b border-white/5">
-                  <div>
-                    <span className="text-xs text-slate-300 font-medium block">
-                      Total Annual Gross Commission (GCI):
-                    </span>
-                    <span className="text-[11px] text-slate-400 font-mono">
-                      {formatCurrency(output.avgGciPerDeal)} avg GCI per side
-                    </span>
-                  </div>
-                  <span
-                    data-testid="output-total-gci"
-                    className="text-xl font-bold font-mono text-white"
-                  >
-                    {formatCurrency(output.totalAnnualGci)}
+                  <span className="text-xs font-mono text-rose-400 font-semibold">
+                    -{auditMetrics.qualificationOddsDropPercent}% Qualification Odds
                   </span>
                 </div>
 
-                {/* Output 2: Est. Split & Cap Calculation Leakage (3.2%) */}
-                <div className="flex items-baseline justify-between gap-4 py-2 border-b border-white/5">
-                  <div>
-                    <span className="text-xs text-slate-300 font-medium block">
-                      Est. Split &amp; Cap Calculation Leakage (3.2%):
-                    </span>
-                    <span className="text-[11px] text-slate-400">
-                      Tier miscalculations, missed anniversary resets &amp; CD variances
-                    </span>
-                  </div>
-                  <span
-                    data-testid="output-split-leakage"
-                    className="text-lg font-bold font-mono text-rose-400 shrink-0"
-                  >
-                    -{formatCurrency(output.splitAndCapLeakage)}
-                  </span>
-                </div>
-
-                {/* Output 3: Est. Uncollected / Delayed Referral Fees */}
-                <div className="flex items-baseline justify-between gap-4 py-2 border-b border-white/10">
-                  <div>
-                    <span className="text-xs text-slate-300 font-medium block">
-                      Est. Uncollected / Delayed Referral Fees:
-                    </span>
-                    <span className="text-[11px] text-slate-400">
-                      Unpaid 25% outbound co-broker referral agreements
-                    </span>
-                  </div>
-                  <span
-                    data-testid="output-referral-leakage"
-                    className="text-lg font-bold font-mono text-rose-400 shrink-0"
-                  >
-                    -{formatCurrency(output.uncollectedReferralLeakage)}
-                  </span>
-                </div>
-
-                {/* Output 4: Total Recoverable Net Revenue / Year */}
-                <div className="p-5 rounded-xl bg-emerald-500/[0.08] border border-emerald-500/30 space-y-1.5">
-                  <span className="text-xs font-medium text-emerald-300 block">
-                    Total Recoverable Net Revenue / Year:
+                <div>
+                  <span className="text-xs text-slate-400 block">
+                    Estimated Monthly Leaked GCI
                   </span>
                   <div
-                    data-testid="output-recoverable-revenue"
-                    className="text-3xl sm:text-4xl font-extrabold font-mono text-emerald-400 tracking-tight drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                    data-testid="monthly-leaked-gci"
+                    className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight mt-1"
                   >
-                    {formatCurrency(output.totalRecoverableNetRevenue)} / yr
+                    {formatCurrency(auditMetrics.monthlyLeakedGci)}
+                    <span className="text-sm font-normal text-slate-400">/mo</span>
                   </div>
-                  <span className="text-[11px] font-mono text-slate-300 block">
-                    100% recoverable via asynchronous historical CD &amp; Deal Sheet audit
+                  <span className="text-xs font-mono text-slate-400 mt-1 block">
+                    ≈ {auditMetrics.monthlyLeakedDeals} missed closings/mo at{' '}
+                    {formatCurrency(auditMetrics.avgCommissionPerDeal)} avg commission
                   </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                  <div>
+                    <span className="text-xs text-slate-400 block">
+                      Annual Unclaimed GCI
+                    </span>
+                    <span
+                      data-testid="annual-leaked-gci"
+                      className="text-lg sm:text-xl font-bold font-mono text-rose-400 mt-0.5 block"
+                    >
+                      {formatCurrency(auditMetrics.annualLeakedGci)}/yr
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-xs text-slate-400 block">
+                      Est. 30-Day AI Recovery
+                    </span>
+                    <span
+                      data-testid="recoverable-30day-gci"
+                      className="text-lg sm:text-xl font-bold font-mono text-emerald-400 mt-0.5 block"
+                    >
+                      +{formatCurrency(auditMetrics.recoverable30DayGci)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-emerald-500/[0.08] border border-emerald-500/25 text-xs text-slate-200 leading-relaxed">
+                  Includes <strong className="font-mono text-emerald-300">+{auditMetrics.reactivatedDatabaseDeals}</strong> projected listing/buyer appointments reactivated from your{' '}
+                  <strong className="font-mono text-white">{deadCrmContacts.toLocaleString()}</strong> dormant CRM contacts.
                 </div>
               </div>
 
-              {/* Action Button inside Calculator */}
-              <div className="pt-2 space-y-2.5">
-                <button
-                  type="button"
-                  onClick={onOpenAuditModal}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-4 text-xs sm:text-sm font-bold text-[#080A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_30px_rgba(16,185,129,0.32)] cursor-pointer"
+              <div className="space-y-3 pt-2">
+                <a
+                  href={AUDIT_TOOL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_30px_rgba(16,185,129,0.35)] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                 >
-                  <span>
-                    Lock In &amp; Recover This {formatCurrency(output.totalRecoverableNetRevenue)} — Request Written Breakdown →
-                  </span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <p className="text-[11px] font-mono text-center text-slate-400">
-                  Delivered via Email, LinkedIn, or SMS within 24 hours · Zero Zoom calls
+                  <span>Launch The Free Commission Audit Tool →</span>
+                  <ArrowUpRight className="w-4 h-4 shrink-0" />
+                </a>
+                <p className="text-[11px] text-center text-slate-400 font-mono">
+                  Generates a customized 14-day GCI recovery roadmap for your brokerage
                 </p>
               </div>
             </div>

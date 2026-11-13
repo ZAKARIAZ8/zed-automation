@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
-import {
-  UploadCloud,
-  FileText,
-  ShieldCheck,
-  ChevronDown,
-  ArrowRight,
-} from 'lucide-react';
-
-interface FaqAndFooterSectionProps {
-  onOpenAuditModal: () => void;
-}
+import { ChevronDown, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { AUDIT_TOOL_URL } from '../utils/commissionCalculator';
 
 interface FaqItem {
   id: string;
@@ -20,169 +11,70 @@ interface FaqItem {
 const FAQ_ITEMS: FaqItem[] = [
   {
     id: 'faq-1',
-    question: 'Do we really never have to get on a 45-minute Zoom sales call?',
+    question: 'Does the AI sound robotic to high-end home buyers and sellers?',
     answer:
-      'Correct. Managing Brokers and Broker-Owners are busy running offices and reviewing contracts. You simply drop an anonymized 90-day export from SkySlope, Dotloop, Brokermint, or LoneWolf, and our audit engineers send you a complete line-by-line written PDF and interactive ledger via Email, LinkedIn, or SMS/WhatsApp within 24 hours.',
+      'No. Our infrastructure is trained specifically on localized US real estate phrasing, market nuances, and conversational cadence—not generic customer support scripts. It references the exact property address, neighborhood comps, and listing details naturally via SMS and voice, then executes a warm handoff directly onto your senior agent’s calendar the moment the prospect is pre-approved and ready to tour or list.',
   },
   {
     id: 'faq-2',
-    question: 'How does the Zed Audit Engine catch post-cap and split errors?',
+    question: 'Which Real Estate CRMs do you integrate with?',
     answer:
-      'We ingest your agent commission plan rules (anniversary dates, tiered splits, franchise royalties, E&O caps, and transaction coordinator fees) and cross-verify every Closing Disclosure (CD / ALTA statement) and Disbursement Authorization against actual title wire receipts.',
+      'We provide native, two-way API and webhook integrations with Follow Up Boss, KVCore, Lofty (formerly Chime), GoHighLevel, LionDesk, and Sierra Interactive. Every SMS thread, call recording, qualification summary, and calendar appointment syncs automatically to the lead’s contact record in real time.',
   },
   {
     id: 'faq-3',
-    question: 'How do you track uncollected outbound referral agreements?',
+    question: 'Do you take a percentage of our commission (GCI split)?',
     answer:
-      'Our engine matches your signed outbound W-9 referral agreements against nationwide MLS sold records and public county deed recordings. The moment a referred client closes at an external brokerage without a corresponding incoming wire in your ledger, we flag the exact dollar receivable and generate the collection notice.',
+      'Never. Unlike in-house Inside Sales Agents who demand 10–15% splits or referral networks like Zillow Flex and OpCity that take 25–40% at the closing table, Zed Automation operates on a flat infrastructure license. You keep 100% of your recovered Gross Commission Income.',
   },
   {
     id: 'faq-4',
-    question: 'Do you take a percentage split of the leaked GCI you uncover?',
+    question: 'How fast can we launch?',
     answer:
-      'No. Your 90-day historical lookback audit is 100% free, and you keep 100% of every dollar of uncollected referrals and split adjustments we uncover. Ongoing automated monthly protection is billed as a flat, predictable software & audit retainer.',
+      'Full deployment, CRM pipeline integration, A2P 10DLC carrier compliance, custom script calibration, and end-to-end quality assurance testing are completed within 14 days.',
   },
 ];
 
-export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
-  onOpenAuditModal,
-}) => {
+export const FaqAndFooterSection: React.FC = () => {
   const [openFaqId, setOpenFaqId] = useState<string>('faq-1');
 
-  const steps = [
-    {
-      stepTag: 'STEP 01 · ZERO IT SETUP',
-      title: 'Step 1: Drop Your Last 90 Days of Closings (CSV or Read-Only API)',
-      description:
-        'Export a simple closed-deals CSV from SkySlope, Dotloop, Brokermint, or LoneWolf. No complex IT setup, agent training, or workflow disruption needed.',
-      footnote: 'Takes < 3 minutes · Anonymized exports supported',
-      icon: UploadCloud,
-    },
-    {
-      stepTag: 'STEP 02 · 24-HOUR TURNAROUND',
-      title: 'Step 2: Receive Your Written Line-by-Line Audit in 24 Hours',
-      description:
-        'We run your data through the Zed Audit Engine and message you a comprehensive written PDF and interactive dashboard report showing every dollar of overpaid splits, missed cap dates, and uncollected referrals.',
-      footnote: 'Delivered directly via Email, LinkedIn, or SMS/WhatsApp',
-      icon: FileText,
-    },
-    {
-      stepTag: 'STEP 03 · 100% ASYNC PROTECTION',
-      title: 'Step 3: Automated Monthly Protection',
-      description:
-        'Keep 100% of what we uncover. Deploy our automated monthly audit workflow for a flat monthly retainer—handled entirely via async updates without a single wasted Zoom meeting.',
-      footnote: 'Flat retainer · Keep 100% of recovered GCI',
-      icon: ShieldCheck,
-    },
-  ];
+  const toggleFaq = (id: string) => {
+    setOpenFaqId((prev) => (prev === id ? '' : id));
+  };
 
   return (
     <>
-      {/* SECTION 5: How Our "Zero-Call, Zero-Disruption" System Works */}
-      <section
-        id="zero-call-pilot"
-        className="py-20 bg-[#080A0F] border-b border-white/10"
-      >
-        <div className="max-w-7xl mx-auto px-6 space-y-12">
-          <div className="max-w-3xl space-y-3">
-            <div className="flex items-center gap-2 text-xs font-medium text-emerald-400">
-              <span>Zero-Call Asynchronous Onboarding</span>
+      {/* Part H: Real Estate FAQ Section (Interactive Accordion) */}
+      <section id="faq" className="py-24 bg-[#090A0F] border-b border-white/10">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="space-y-4 text-center">
+            <div className="flex items-center justify-center gap-2 text-xs font-medium text-emerald-400">
+              <span>Brokerage Due Diligence</span>
               <span aria-hidden="true" className="text-slate-600">·</span>
-              <span className="text-slate-400 font-mono">Built for Busy US Managing Brokers</span>
+              <span className="text-slate-400 font-mono">Frequently Asked Questions</span>
             </div>
+
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              How Our &ldquo;Zero-Call, Zero-Disruption&rdquo; System Works
-            </h2>
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-              We eliminated the 45-minute SaaS discovery call. Test our audit accuracy on your actual historical closings entirely via text and email.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-            {steps.map((step) => {
-              const IconComponent = step.icon;
-              return (
-                <article
-                  key={step.stepTag}
-                  className="rounded-2xl bg-[#111520] border border-white/10 p-7 flex flex-col justify-between space-y-6"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono font-bold text-emerald-400">
-                        {step.stepTag}
-                      </span>
-                      <IconComponent className="w-5 h-5 text-indigo-400" />
-                    </div>
-                    <h3 className="text-lg font-bold text-white tracking-tight">
-                      {step.title}
-                    </h3>
-                    <p className="text-sm text-slate-300 leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
-                  <div className="pt-4 border-t border-white/10 text-xs font-mono text-slate-400">
-                    {step.footnote}
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-
-          <div className="rounded-2xl bg-[#111520] border border-emerald-500/30 p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="space-y-1.5">
-              <div className="text-xs font-mono text-emerald-400 font-semibold">
-                FREE 90-DAY HISTORICAL LOOKBACK PILOT
-              </div>
-              <h3 className="text-xl font-bold text-white">
-                Want to see every leaked dollar from last quarter without booking a call?
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-300">
-                Request your secure upload link and receive a written line-by-line audit report within 24 hours.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={onOpenAuditModal}
-              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold text-[#080A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <span>Request a Free 90-Day Historical Lookback Audit</span>
-              <ArrowRight className="w-4 h-4 shrink-0" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-[#080A0F] border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-6 space-y-10">
-          <div className="text-center space-y-3">
-            <div className="flex items-center justify-center gap-2 text-xs font-medium text-indigo-400">
-              <span>Brokerage Accounting &amp; Compliance FAQ</span>
-              <span aria-hidden="true" className="text-slate-600">·</span>
-              <span className="text-slate-400 font-mono">Zero-Call Audit Protocol</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Frequently Asked Questions
+              Answers to Top US Broker &amp; Team Leader Questions
             </h2>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="mt-12 space-y-4">
             {FAQ_ITEMS.map((item, idx) => {
               const isOpen = openFaqId === item.id;
               return (
                 <div
                   key={item.id}
-                  className="rounded-2xl bg-[#111520] border border-white/10 overflow-hidden"
+                  className="rounded-2xl backdrop-blur-md bg-[#11131C]/90 border border-white/10 overflow-hidden transition-colors"
                 >
                   <button
                     type="button"
-                    onClick={() =>
-                      setOpenFaqId((prev) => (prev === item.id ? '' : item.id))
-                    }
+                    onClick={() => toggleFaq(item.id)}
                     aria-expanded={isOpen}
-                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                    aria-controls={`${item.id}-content`}
+                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                   >
-                    <span className="text-sm sm:text-base font-bold text-white flex items-center gap-3">
+                    <span className="text-base font-bold text-white flex items-center gap-3">
                       <span className="font-mono text-xs text-emerald-400">
                         0{idx + 1}.
                       </span>
@@ -194,8 +86,12 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
                       }`}
                     />
                   </button>
+
                   {isOpen && (
-                    <div className="px-6 pb-6 pt-1 text-sm text-slate-300 leading-relaxed border-t border-white/5">
+                    <div
+                      id={`${item.id}-content`}
+                      className="px-6 pb-6 pt-1 text-sm text-slate-300 leading-relaxed border-t border-white/5"
+                    >
                       {item.answer}
                     </div>
                   )}
@@ -206,42 +102,93 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
         </div>
       </section>
 
-      {/* Quiet Footer */}
-      <footer className="bg-[#080A0F] py-12">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-slate-400">
-          <div className="flex items-center gap-3">
-            <span className="font-extrabold text-white tracking-tight">
-              ZED AUTOMATION
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>US Real Estate Commission Audit &amp; Leakage Detection</span>
-          </div>
+      {/* Part I: High-Converting Footer & Final CTA */}
+      <footer className="bg-[#090A0F] pt-20 pb-14 relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[850px] h-[320px] bg-gradient-to-t from-emerald-500/15 via-indigo-500/10 to-transparent blur-3xl"
+        />
 
-          <div className="flex flex-wrap items-center gap-6">
-            <a href="#overview" className="hover:text-white transition-colors">
-              Overview
-            </a>
-            <a href="#calculator" className="hover:text-white transition-colors">
-              Instant GCI Calculator
-            </a>
-            <a href="#auditor" className="hover:text-white transition-colors">
-              Live Transaction Auditor
-            </a>
-            <a href="#zero-call-pilot" className="hover:text-white transition-colors">
-              Zero-Call Pilot
-            </a>
-            <button
-              type="button"
-              onClick={onOpenAuditModal}
-              className="text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
+        <div className="max-w-7xl mx-auto px-6 relative z-10 space-y-16">
+          {/* Final Bold Callout Banner */}
+          <div className="rounded-3xl backdrop-blur-xl bg-gradient-to-b from-[#131724] to-[#0C0E16] border border-white/10 p-8 sm:p-14 text-center max-w-4xl mx-auto space-y-6 shadow-2xl">
+            <div className="text-xs font-mono text-emerald-400 uppercase tracking-wider">
+              Stop Losing Deals to Faster Competitors
+            </div>
+
+            <h2
+              className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight"
+              style={{ textWrap: 'balance' }}
             >
-              Request Written Audit →
-            </button>
+              Ready to Recover Your Unclaimed Commissions?
+            </h2>
+
+            <p className="text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              See exactly how much GCI your brokerage is leaking every month—and how our 24/7 Speed-to-Lead &amp; Database Reactivation infrastructure locks those closings back onto your calendar in 14 days.
+            </p>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href={AUDIT_TOOL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_35px_rgba(16,185,129,0.4)] whitespace-nowrap shrink-0"
+              >
+                <span>Run Your Free Commission Audit Now</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
+              </a>
+
+              <a
+                href="#book-call"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-sm font-semibold text-slate-200 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors whitespace-nowrap shrink-0"
+              >
+                <span>Book a 15-Min Architecture Call</span>
+              </a>
+            </div>
           </div>
 
-          <p className="text-slate-400">
-            © 2026 Zed Automation. Built for US Managing Brokers &amp; Team Leaders.
-          </p>
+          {/* Quiet Footer Bottom Bar */}
+          <div className="pt-10 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-slate-400">
+            <div className="flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className="w-6 h-6 rounded-md bg-emerald-400 flex items-center justify-center text-[#090A0F] font-extrabold font-mono text-xs"
+              >
+                Z
+              </span>
+              <span className="font-bold text-white">Zed Automation</span>
+              <span aria-hidden="true">·</span>
+              <span>Autonomous AI Revenue Recovery</span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-6">
+              <a href="#problem" className="hover:text-white transition-colors">
+                The Problem
+              </a>
+              <a href="#infrastructure" className="hover:text-white transition-colors">
+                AI Infrastructure
+              </a>
+              <a href="#roi-audit" className="hover:text-white transition-colors">
+                Live ROI Audit
+              </a>
+              <a href="#case-studies" className="hover:text-white transition-colors">
+                Case Studies
+              </a>
+              <a
+                href={AUDIT_TOOL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center gap-1"
+              >
+                <span>Commission Audit Tool</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            <p className="text-slate-400 text-center sm:text-right">
+              © 2026 Zed Automation. Built for High-Performing US Real Estate Teams.
+            </p>
+          </div>
         </div>
       </footer>
     </>
