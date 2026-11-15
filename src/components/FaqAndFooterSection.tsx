@@ -35,7 +35,13 @@ const FAQ_ITEMS: FaqItem[] = [
   },
 ];
 
-export const FaqAndFooterSection: React.FC = () => {
+interface FaqAndFooterSectionProps {
+  onOpenAsyncModal?: () => void;
+}
+
+export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
+  onOpenAsyncModal,
+}) => {
   const [openFaqId, setOpenFaqId] = useState<string>('faq-1');
 
   const toggleFaq = (id: string) => {

@@ -70,7 +70,11 @@ const LEAD_SCENARIOS: Record<LeadScenario['id'], LeadScenario> = {
   },
 };
 
-export const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  onOpenAsyncModal?: () => void;
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) => {
   const [selectedScenario, setSelectedScenario] = useState<LeadScenario['id']>('zillow');
   const [activeStep, setActiveStep] = useState<number>(3);
 
@@ -155,6 +159,18 @@ export const HeroSection: React.FC = () => {
                 >
                   Or Book a 15-Min Architecture Call →
                 </a>
+                {onOpenAsyncModal && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <button
+                      type="button"
+                      onClick={onOpenAsyncModal}
+                      className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-medium transition-colors"
+                    >
+                      Request 90-Day Written Audit
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>

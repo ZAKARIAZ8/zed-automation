@@ -3,6 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        try {
+          var currentFetch = window.fetch ? window.fetch.bind(window) : undefined;
+          var desc =
+            Object.getOwnPropertyDescriptor(window, 'fetch') ||
+            Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
+          if (desc && desc.get && !desc.set && desc.configurable !== false) {
+            Object.defineProperty(window, 'fetch', {
+              configurable: true,
+              enumerable: true,
+              get: function () {
+                return currentFetch;
+              },
+              set: function (fn) {
+                if (typeof fn === 'function') {
+                  currentFetch = fn;
+                }
+              },
+            });
+          }
+        } catch (_) {}
+
+        window.addEventListener(
+          'error',
+          function (event) {
+            var msg = String((event && event.message) || '');
+            var src = String((event && event.filename) || '');
+            if (
+              msg.indexOf('Cannot set property fetch') !== -1 ||
+              src.indexOf('chrome-extension://') === 0
+            ) {
+              event.stopImmediatePropagation();
+              event.preventDefault();
+            }
+          },
+          true
+        );
+      })();
+    </script>
     <title>Zed Automation — Real Estate AI Commission Recovery</title>
     <meta name="description" content="Autonomous AI Speed-to-Lead & Database Reactivation infrastructure for US Real Estate Brokerages, Teams, and Top-Producing Realtors." />
     <meta property="og:title" content="Zed Automation — Real Estate AI Commission Recovery" />

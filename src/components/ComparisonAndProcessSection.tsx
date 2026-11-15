@@ -14,7 +14,13 @@ import {
   validateArchitectureCallForm,
 } from '../utils/commissionCalculator';
 
-export const ComparisonAndProcessSection: React.FC = () => {
+interface ComparisonAndProcessSectionProps {
+  onOpenAsyncModal?: () => void;
+}
+
+export const ComparisonAndProcessSection: React.FC<ComparisonAndProcessSectionProps> = ({
+  onOpenAsyncModal,
+}) => {
   const [formState, setFormState] = useState<ArchitectureCallFormInput>({
     fullName: '',
     brokerageName: '',

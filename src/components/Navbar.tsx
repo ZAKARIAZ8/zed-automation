@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { AUDIT_TOOL_URL } from '../utils/commissionCalculator';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onOpenAsyncModal?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onOpenAsyncModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { label: 'The Problem', href: '#problem' },
+    { label: 'Live Audit Sandbox', href: '#audit-engine' },
     { label: 'Our AI Infrastructure', href: '#infrastructure' },
-    { label: 'Live ROI Audit', href: '#roi-audit' },
-    { label: 'Case Studies', href: '#case-studies' },
+    { label: 'ROI Calculator', href: '#calculator' },
     { label: 'FAQ', href: '#faq' },
   ];
 

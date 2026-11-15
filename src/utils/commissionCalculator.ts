@@ -1,3 +1,5 @@
+export const AUDIT_TOOL_URL = 'https://zed-automation-1.vercel.app/commission-audit';
+
 export interface LeakageInput {
   annualTransactions: number;
   avgSalePrice: number;
@@ -35,5 +37,61 @@ export function calculateCommissionLeakage(input: LeakageInput): LeakageOutput {
     splitAndCapLeakage,
     uncollectedReferralLeakage,
     totalRecoverableGci,
+  };
+}
+
+export interface ArchitectureCallFormInput {
+  fullName: string;
+  brokerageName: string;
+  workEmail: string;
+  phone: string;
+  currentCrm: string;
+  annualVolume: string;
+  selectedSlot: string;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  errors: Partial<Record<keyof ArchitectureCallFormInput, string>>;
+}
+
+export function validateArchitectureCallForm(
+  input: ArchitectureCallFormInput
+): ValidationResult {
+  const errors: Partial<Record<keyof ArchitectureCallFormInput, string>> = {};
+
+  if (!input.fullName || input.fullName.trim().length < 2) {
+    errors.fullName = 'Please enter your full name.';
+  }
+
+  if (!input.brokerageName || input.brokerageName.trim().length < 2) {
+    errors.brokerageName = 'Please enter your brokerage or team name.';
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!input.workEmail || !emailRegex.test(input.workEmail.trim())) {
+    errors.workEmail = 'Please enter a valid work email address.';
+  }
+
+  const digitsOnly = (input.phone || '').replace(/\D/g, '');
+  if (digitsOnly.length < 10) {
+    errors.phone = 'Please enter a valid 10-digit US phone number.';
+  }
+
+  if (!input.currentCrm) {
+    errors.currentCrm = 'Please select your primary CRM.';
+  }
+
+  if (!input.annualVolume) {
+    errors.annualVolume = 'Please select your team annual volume.';
+  }
+
+  if (!input.selectedSlot) {
+    errors.selectedSlot = 'Please choose a 15-minute architecture slot.';
+  }
+
+  return {
+    valid: Object.keys(errors).length === 0,
+    errors,
   };
 }
