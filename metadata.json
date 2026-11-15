@@ -1,6 +1,5 @@
 {
-  "name": "Zed Automation — Real Estate AI Commission Recovery",
-  "description": "Autonomous AI Speed-to-Lead & Database Reactivation infrastructure for US Real Estate Brokerages, Teams, and Top-Producing Realtors.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "name": "Zed Automation - Real Estate Commission Audit",
+  "description": "Commission audit, leakage detection, and real estate admin dashboard for brokerages.",
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
