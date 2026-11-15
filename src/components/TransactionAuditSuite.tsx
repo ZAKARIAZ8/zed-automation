@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   ShieldAlert,
   Search,
@@ -6,14 +6,19 @@ import {
   Download,
   CheckCircle2,
   AlertTriangle,
-  XCircle,
   Eye,
   X,
   ArrowUpRight,
   FileSpreadsheet,
   Sparkles,
   Check,
+  Upload,
+  FileText,
+  Building2,
+  RotateCcw,
 } from 'lucide-react';
+import { CsvImportPanel } from './CsvImportPanel';
+import { PdfReportDialog } from './PdfReportDialog';
 
 export type LeakageCategory =
   | 'Post-Cap / Split Overpayment'
@@ -40,140 +45,222 @@ export interface AuditTransaction {
   sourceSystem: string;
 }
 
-const INITIAL_TRANSACTIONS: AuditTransaction[] = [
+export interface BrokerageWorkspace {
+  id: string;
+  name: string;
+  state: string;
+  crm: string;
+  transactions: AuditTransaction[];
+}
+
+const DEFAULT_WORKSPACES: BrokerageWorkspace[] = [
   {
-    id: 'TX-9041',
-    propertyAddress: '742 Evergreen Terrace',
-    cityState: 'Austin, TX',
-    closingDate: '2026-10-28',
-    agentName: 'Sarah Jenkins',
-    splitPlan: '80/20 (Capped Oct 12)',
-    salePrice: 685000,
-    commissionRate: 3.0,
-    grossGci: 20550,
-    expectedNetPayout: 20550,
-    actualWireReceived: 16440,
-    leakageAmount: 4110,
-    category: 'Post-Cap / Split Overpayment',
-    status: 'Flagged',
-    auditNote:
-      'Agent hit $18,000 annual brokerage cap on Oct 12. Title company still deducted 20% house split ($4,110) on the Closing Disclosure.',
-    sourceSystem: 'SkySlope + ALTA CD',
+    id: 'ws-lone-star',
+    name: 'Lone Star Premier Realty (Sample)',
+    state: 'TX',
+    crm: 'SkySlope + Follow Up Boss',
+    transactions: [
+      {
+        id: 'TX-9041',
+        propertyAddress: '742 Evergreen Terrace',
+        cityState: 'Austin, TX',
+        closingDate: '2026-10-28',
+        agentName: 'Sarah Jenkins',
+        splitPlan: '80/20 (Capped Oct 12)',
+        salePrice: 685000,
+        commissionRate: 3.0,
+        grossGci: 20550,
+        expectedNetPayout: 20550,
+        actualWireReceived: 16440,
+        leakageAmount: 4110,
+        category: 'Post-Cap / Split Overpayment',
+        status: 'Flagged',
+        auditNote:
+          'Agent hit $18,000 annual brokerage cap on Oct 12. Title company still deducted 20% house split ($4,110) on the Closing Disclosure.',
+        sourceSystem: 'SkySlope + ALTA CD',
+      },
+      {
+        id: 'TX-9038',
+        propertyAddress: '1904 Brickell Ave #14B',
+        cityState: 'Miami, FL',
+        closingDate: '2026-10-24',
+        agentName: 'Marcus Vance',
+        splitPlan: 'Outbound Referral (25%)',
+        salePrice: 920000,
+        commissionRate: 3.0,
+        grossGci: 27600,
+        expectedNetPayout: 6900,
+        actualWireReceived: 0,
+        leakageAmount: 6900,
+        category: 'Uncollected Referral Fee',
+        status: 'Flagged',
+        auditNote:
+          'Signed referral agreement executed Aug 14 with receiving Miami brokerage. Property closed 21 days ago; referral wire never arrived.',
+        sourceSystem: 'Follow Up Boss + Referral Log',
+      },
+      {
+        id: 'TX-9032',
+        propertyAddress: '8820 E Pinnacle Peak Rd',
+        cityState: 'Scottsdale, AZ',
+        closingDate: '2026-10-19',
+        agentName: 'Elena Rostova',
+        splitPlan: '85/15 Team Split',
+        salePrice: 1150000,
+        commissionRate: 2.75,
+        grossGci: 31625,
+        expectedNetPayout: 26881,
+        actualWireReceived: 23431,
+        leakageAmount: 3450,
+        category: 'CD / Settlement Underpayment',
+        status: 'Flagged',
+        auditNote:
+          'Disbursement Authorization (DA) listed 2.75% listing commission, but escrow funded at 2.45% due to unapproved seller credit reduction.',
+        sourceSystem: 'Brokermint + Title Wire',
+      },
+      {
+        id: 'TX-9027',
+        propertyAddress: '415 Peachtree Battle Ave',
+        cityState: 'Atlanta, GA',
+        closingDate: '2026-10-15',
+        agentName: 'David Thorne',
+        splitPlan: '80/20 Standard',
+        salePrice: 540000,
+        commissionRate: 3.0,
+        grossGci: 16200,
+        expectedNetPayout: 12960,
+        actualWireReceived: 12960,
+        leakageAmount: 0,
+        category: 'Verified Clean',
+        status: 'Clean',
+        auditNote:
+          'Settlement statement matches Disbursement Authorization and agent split tier to the penny.',
+        sourceSystem: 'Dotloop + Bank Feed',
+      },
+      {
+        id: 'TX-9021',
+        propertyAddress: '2310 Cedar Springs Rd',
+        cityState: 'Dallas, TX',
+        closingDate: '2026-10-11',
+        agentName: 'Jessica Chen',
+        splitPlan: 'Outbound Referral (30%)',
+        salePrice: 610000,
+        commissionRate: 3.0,
+        grossGci: 18300,
+        expectedNetPayout: 5490,
+        actualWireReceived: 0,
+        leakageAmount: 5490,
+        category: 'Uncollected Referral Fee',
+        status: 'Flagged',
+        auditNote:
+          'Relocation buyer closed on MLS #20491822. Receiving agent did not attach W-9 / referral invoice at closing table.',
+        sourceSystem: 'MLS Sync + Referral Tracker',
+      },
+      {
+        id: 'TX-9014',
+        propertyAddress: '1180 S Beverly Glen Blvd',
+        cityState: 'Los Angeles, CA',
+        closingDate: '2026-10-06',
+        agentName: 'Ryan Callahan',
+        splitPlan: '90/10 Top Producer',
+        salePrice: 1420000,
+        commissionRate: 2.5,
+        grossGci: 35500,
+        expectedNetPayout: 31950,
+        actualWireReceived: 29820,
+        leakageAmount: 2130,
+        category: 'Post-Cap / Split Overpayment',
+        status: 'Flagged',
+        auditNote:
+          '6% franchise royalty fee was charged twice on both the gross GCI and net team split.',
+        sourceSystem: 'LoneWolf + CD Audit',
+      },
+      {
+        id: 'TX-9009',
+        propertyAddress: '509 Lake Shore Dr',
+        cityState: 'Chicago, IL',
+        closingDate: '2026-10-02',
+        agentName: 'Sarah Jenkins',
+        splitPlan: '80/20 Standard',
+        salePrice: 475000,
+        commissionRate: 2.75,
+        grossGci: 13063,
+        expectedNetPayout: 10450,
+        actualWireReceived: 10450,
+        leakageAmount: 0,
+        category: 'Verified Clean',
+        status: 'Clean',
+        auditNote: 'All wire amounts, admin fees, and split tiers reconciled.',
+        sourceSystem: 'SkySlope + Bank Feed',
+      },
+    ],
   },
   {
-    id: 'TX-9038',
-    propertyAddress: '1904 Brickell Ave #14B',
-    cityState: 'Miami, FL',
-    closingDate: '2026-10-24',
-    agentName: 'Marcus Vance',
-    splitPlan: 'Outbound Referral (25%)',
-    salePrice: 920000,
-    commissionRate: 3.0,
-    grossGci: 27600,
-    expectedNetPayout: 6900,
-    actualWireReceived: 0,
-    leakageAmount: 6900,
-    category: 'Uncollected Referral Fee',
-    status: 'Flagged',
-    auditNote:
-      'Signed referral agreement executed Aug 14 with receiving Miami brokerage. Property closed 21 days ago; referral wire never arrived.',
-    sourceSystem: 'Follow Up Boss + Referral Log',
-  },
-  {
-    id: 'TX-9032',
-    propertyAddress: '8820 E Pinnacle Peak Rd',
-    cityState: 'Scottsdale, AZ',
-    closingDate: '2026-10-19',
-    agentName: 'Elena Rostova',
-    splitPlan: '85/15 Team Split',
-    salePrice: 1150000,
-    commissionRate: 2.75,
-    grossGci: 31625,
-    expectedNetPayout: 26881,
-    actualWireReceived: 23431,
-    leakageAmount: 3450,
-    category: 'CD / Settlement Underpayment',
-    status: 'Flagged',
-    auditNote:
-      'Disbursement Authorization (DA) listed 2.75% listing commission, but escrow funded at 2.45% due to unapproved seller credit reduction.',
-    sourceSystem: 'Brokermint + Title Wire',
-  },
-  {
-    id: 'TX-9027',
-    propertyAddress: '415 Peachtree Battle Ave',
-    cityState: 'Atlanta, GA',
-    closingDate: '2026-10-15',
-    agentName: 'David Thorne',
-    splitPlan: '80/20 Standard',
-    salePrice: 540000,
-    commissionRate: 3.0,
-    grossGci: 16200,
-    expectedNetPayout: 12960,
-    actualWireReceived: 12960,
-    leakageAmount: 0,
-    category: 'Verified Clean',
-    status: 'Clean',
-    auditNote:
-      'Settlement statement matches Disbursement Authorization and agent split tier to the penny.',
-    sourceSystem: 'Dotloop + Bank Feed',
-  },
-  {
-    id: 'TX-9021',
-    propertyAddress: '2310 Cedar Springs Rd',
-    cityState: 'Dallas, TX',
-    closingDate: '2026-10-11',
-    agentName: 'Jessica Chen',
-    splitPlan: 'Outbound Referral (30%)',
-    salePrice: 610000,
-    commissionRate: 3.0,
-    grossGci: 18300,
-    expectedNetPayout: 5490,
-    actualWireReceived: 0,
-    leakageAmount: 5490,
-    category: 'Uncollected Referral Fee',
-    status: 'Flagged',
-    auditNote:
-      'Relocation buyer closed on MLS #20491822. Receiving agent did not attach W-9 / referral invoice at closing table.',
-    sourceSystem: 'MLS Sync + Referral Tracker',
-  },
-  {
-    id: 'TX-9014',
-    propertyAddress: '1180 S Beverly Glen Blvd',
-    cityState: 'Los Angeles, CA',
-    closingDate: '2026-10-06',
-    agentName: 'Ryan Callahan',
-    splitPlan: '90/10 Top Producer',
-    salePrice: 1420000,
-    commissionRate: 2.5,
-    grossGci: 35500,
-    expectedNetPayout: 31950,
-    actualWireReceived: 29820,
-    leakageAmount: 2130,
-    category: 'Post-Cap / Split Overpayment',
-    status: 'Flagged',
-    auditNote:
-      '6% franchise royalty fee was charged twice on both the gross GCI and net team split.',
-    sourceSystem: 'LoneWolf + CD Audit',
-  },
-  {
-    id: 'TX-9009',
-    propertyAddress: '509 Lake Shore Dr',
-    cityState: 'Chicago, IL',
-    closingDate: '2026-10-02',
-    agentName: 'Sarah Jenkins',
-    splitPlan: '80/20 Standard',
-    salePrice: 475000,
-    commissionRate: 2.75,
-    grossGci: 13063,
-    expectedNetPayout: 10450,
-    actualWireReceived: 10450,
-    leakageAmount: 0,
-    category: 'Verified Clean',
-    status: 'Clean',
-    auditNote: 'All wire amounts, admin fees, and split tiers reconciled.',
-    sourceSystem: 'SkySlope + Bank Feed',
+    id: 'ws-coastal-luxury',
+    name: 'Coastal Luxury Group (Sample)',
+    state: 'FL',
+    crm: 'Dotloop + KVCore',
+    transactions: [
+      {
+        id: 'FL-4410',
+        propertyAddress: '2800 N Ocean Blvd',
+        cityState: 'Fort Lauderdale, FL',
+        closingDate: '2026-11-01',
+        agentName: 'Victoria Sterling',
+        splitPlan: '90/10 Luxury Tier',
+        salePrice: 1850000,
+        commissionRate: 3.0,
+        grossGci: 55500,
+        expectedNetPayout: 49950,
+        actualWireReceived: 44400,
+        leakageAmount: 5550,
+        category: 'Post-Cap / Split Overpayment',
+        status: 'Flagged',
+        auditNote:
+          'Escrow applied legacy 80/20 split instead of renewed 90/10 tier effective Q4.',
+        sourceSystem: 'Dotloop + Wire Feed',
+      },
+      {
+        id: 'FL-4404',
+        propertyAddress: '614 Banyan Rd',
+        cityState: 'Naples, FL',
+        closingDate: '2026-10-22',
+        agentName: 'Carlos Mendez',
+        splitPlan: 'Outbound Referral (30%)',
+        salePrice: 1290000,
+        commissionRate: 2.5,
+        grossGci: 32250,
+        expectedNetPayout: 9675,
+        actualWireReceived: 0,
+        leakageAmount: 9675,
+        category: 'Uncollected Referral Fee',
+        status: 'Flagged',
+        auditNote:
+          'Snowbird referral closed with partner brokerage; incoming check never logged.',
+        sourceSystem: 'KVCore Referral Log',
+      },
+      {
+        id: 'FL-4398',
+        propertyAddress: '920 Las Olas Cir',
+        cityState: 'Fort Lauderdale, FL',
+        closingDate: '2026-10-14',
+        agentName: 'Victoria Sterling',
+        splitPlan: '90/10 Luxury Tier',
+        salePrice: 960000,
+        commissionRate: 3.0,
+        grossGci: 28800,
+        expectedNetPayout: 25920,
+        actualWireReceived: 25920,
+        leakageAmount: 0,
+        category: 'Verified Clean',
+        status: 'Clean',
+        auditNote: 'DA and wire match 100%.',
+        sourceSystem: 'Dotloop + Wire Feed',
+      },
+    ],
   },
 ];
+
+const STORAGE_KEY = 'zed_automation_audit_workspaces_v25';
 
 interface TransactionAuditSuiteProps {
   onOpenAsyncModal: (prefillLeakage?: number) => void;
@@ -182,12 +269,59 @@ interface TransactionAuditSuiteProps {
 export const TransactionAuditSuite: React.FC<TransactionAuditSuiteProps> = ({
   onOpenAsyncModal,
 }) => {
-  const [transactions, setTransactions] =
-    useState<AuditTransaction[]>(INITIAL_TRANSACTIONS);
+  const [workspaces, setWorkspaces] = useState<BrokerageWorkspace[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // Fallback to default workspaces
+    }
+    return DEFAULT_WORKSPACES;
+  });
+
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string>(
+    DEFAULT_WORKSPACES[0].id
+  );
   const [activeFilter, setActiveFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedTx, setSelectedTx] = useState<AuditTransaction | null>(null);
   const [showSimulator, setShowSimulator] = useState<boolean>(false);
+  const [showCsvImporter, setShowCsvImporter] = useState<boolean>(false);
+  const [showPdfReport, setShowPdfReport] = useState<boolean>(false);
+  const [showNewClientForm, setShowNewClientForm] = useState<boolean>(false);
+  const [newBrokerageName, setNewBrokerageName] = useState<string>('');
+  const [newBrokerageState, setNewBrokerageState] = useState<string>('TX');
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(workspaces));
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [workspaces]);
+
+  const activeWorkspace = useMemo(() => {
+    return (
+      workspaces.find((w) => w.id === activeWorkspaceId) || workspaces[0]
+    );
+  }, [workspaces, activeWorkspaceId]);
+
+  const transactions = activeWorkspace.transactions;
+
+  const updateActiveTransactions = (
+    updater: (prev: AuditTransaction[]) => AuditTransaction[]
+  ) => {
+    setWorkspaces((prev) =>
+      prev.map((ws) =>
+        ws.id === activeWorkspace.id
+          ? { ...ws, transactions: updater(ws.transactions) }
+          : ws
+      )
+    );
+  };
 
   // Simulator form state
   const [simAddress, setSimAddress] = useState('1450 Ocean Blvd, Boca Raton, FL');
@@ -248,12 +382,35 @@ export const TransactionAuditSuite: React.FC<TransactionAuditSuiteProps> = ({
     }).format(val);
 
   const handleMarkRecovered = (id: string) => {
-    setTransactions((prev) =>
+    updateActiveTransactions((prev) =>
       prev.map((tx) => (tx.id === id ? { ...tx, status: 'Recovered' } : tx))
     );
     if (selectedTx && selectedTx.id === id) {
       setSelectedTx({ ...selectedTx, status: 'Recovered' });
     }
+  };
+
+  const handleCreateWorkspace = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newBrokerageName.trim()) return;
+    const newId = `ws-${Date.now()}`;
+    const created: BrokerageWorkspace = {
+      id: newId,
+      name: newBrokerageName.trim(),
+      state: newBrokerageState.trim() || 'US',
+      crm: 'SkySlope / CSV Import',
+      transactions: [...DEFAULT_WORKSPACES[0].transactions.slice(0, 3)],
+    };
+    setWorkspaces((prev) => [created, ...prev]);
+    setActiveWorkspaceId(newId);
+    setNewBrokerageName('');
+    setShowNewClientForm(false);
+  };
+
+  const handleResetDemoData = () => {
+    setWorkspaces(DEFAULT_WORKSPACES);
+    setActiveWorkspaceId(DEFAULT_WORKSPACES[0].id);
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   const handleAddSimulatedDeal = (e: React.FormEvent) => {
@@ -295,9 +452,29 @@ export const TransactionAuditSuite: React.FC<TransactionAuditSuiteProps> = ({
       sourceSystem: 'Live Sandbox Simulator',
     };
 
-    setTransactions((prev) => [newTx, ...prev]);
+    updateActiveTransactions((prev) => [newTx, ...prev]);
     setShowSimulator(false);
     setSelectedTx(newTx);
+  };
+
+  const handleImportCsvDeals = (
+    importedDeals: AuditTransaction[],
+    brokerageLabel?: string
+  ) => {
+    if (brokerageLabel) {
+      const newId = `ws-${Date.now()}`;
+      const newWs: BrokerageWorkspace = {
+        id: newId,
+        name: brokerageLabel,
+        state: 'US',
+        crm: 'CSV Batch Import',
+        transactions: importedDeals,
+      };
+      setWorkspaces((prev) => [newWs, ...prev]);
+      setActiveWorkspaceId(newId);
+    } else {
+      updateActiveTransactions((prev) => [...importedDeals, ...prev]);
+    }
   };
 
   const handleDownloadCsv = () => {
@@ -340,7 +517,10 @@ export const TransactionAuditSuite: React.FC<TransactionAuditSuiteProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'Zed-Automation-Commission-Audit-Report.csv');
+    link.setAttribute(
+      'download',
+      `${activeWorkspace.name.replace(/[^a-z0-9]/gi, '-')}-Audit-Report.csv`
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -353,37 +533,138 @@ export const TransactionAuditSuite: React.FC<TransactionAuditSuiteProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono uppercase tracking-wider mb-4">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Zed Audit Suite v2.5 • Live Transaction Sandbox</span>
+              <span>Zed Audit Suite v2.5 • Full Client-Side Engine</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
               Live CD/ALTA & Referral Leakage Detector
             </h2>
             <p className="mt-3 text-slate-400 max-w-2xl text-base">
-              Pre-loaded with real-world US brokerage settlement scenarios. Inspect individual audit math, simulate your own closing numbers, or export a sample CSV report—zero login required.
+              Switch between sample brokerages, import your own SkySlope/Dotloop CSV batch, simulate custom deal math, or generate an Executive PDF Report—zero login required.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             <button
-              onClick={() => setShowSimulator(!showSimulator)}
+              onClick={() => {
+                setShowCsvImporter(!showCsvImporter);
+                setShowSimulator(false);
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-sm font-medium transition-colors"
+            >
+              <Upload className="w-4 h-4 text-emerald-400" />
+              <span>Import CSV</span>
+            </button>
+            <button
+              onClick={() => {
+                setShowSimulator(!showSimulator);
+                setShowCsvImporter(false);
+              }}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors shadow-lg shadow-indigo-500/20"
             >
               <Plus className="w-4 h-4" />
-              <span>Simulate a Deal</span>
+              <span>Simulate Deal</span>
+            </button>
+            <button
+              onClick={() => setShowPdfReport(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-sm font-medium transition-colors"
+            >
+              <FileText className="w-4 h-4 text-indigo-400" />
+              <span>PDF Report</span>
             </button>
             <button
               onClick={handleDownloadCsv}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-sm font-medium transition-colors"
             >
               <Download className="w-4 h-4 text-emerald-400" />
-              <span>Export CSV Report</span>
+              <span>Export CSV</span>
             </button>
           </div>
         </div>
+
+        {/* Brokerage / Client Workspace Selector Bar */}
+        <div className="mb-6 p-4 rounded-2xl bg-[#111520] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase text-slate-400">
+              <Building2 className="w-4 h-4 text-indigo-400" />
+              <span>Active Brokerage Profile:</span>
+            </div>
+            <select
+              value={activeWorkspace.id}
+              onChange={(e) => setActiveWorkspaceId(e.target.value)}
+              className="px-3.5 py-2 rounded-xl bg-[#080A0F] border border-white/15 text-sm font-medium text-white focus:outline-none focus:border-indigo-500"
+            >
+              {workspaces.map((ws) => (
+                <option key={ws.id} value={ws.id}>
+                  {ws.name} ({ws.state}) — {ws.transactions.length} Deals
+                </option>
+              ))}
+            </select>
+            <span className="hidden md:inline-block text-xs text-slate-500 font-mono">
+              Stack: {activeWorkspace.crm}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowNewClientForm(!showNewClientForm)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-slate-200 transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5 text-emerald-400" />
+              <span>New Brokerage Profile</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleResetDemoData}
+              title="Reset sample workspaces"
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Inline New Brokerage Form */}
+        {showNewClientForm && (
+          <form
+            onSubmit={handleCreateWorkspace}
+            className="mb-6 p-4 rounded-xl bg-[#111520] border border-indigo-500/30 flex flex-col sm:flex-row items-center gap-3"
+          >
+            <input
+              type="text"
+              required
+              placeholder="Enter Brokerage or Team Name (e.g. Compass Austin Team)"
+              value={newBrokerageName}
+              onChange={(e) => setNewBrokerageName(e.target.value)}
+              className="flex-1 w-full px-3.5 py-2 rounded-lg bg-[#080A0F] border border-white/10 text-sm text-white focus:outline-none focus:border-indigo-500"
+            />
+            <input
+              type="text"
+              maxLength={4}
+              placeholder="State (TX)"
+              value={newBrokerageState}
+              onChange={(e) => setNewBrokerageState(e.target.value.toUpperCase())}
+              className="w-full sm:w-24 px-3.5 py-2 rounded-lg bg-[#080A0F] border border-white/10 text-sm text-white font-mono focus:outline-none focus:border-indigo-500"
+            />
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-colors"
+            >
+              Create Workspace
+            </button>
+          </form>
+        )}
+
+        {/* Batch CSV Importer Panel */}
+        <CsvImportPanel
+          isOpen={showCsvImporter}
+          onClose={() => setShowCsvImporter(false)}
+          onImportTransactions={handleImportCsvDeals}
+        />
 
         {/* Inline Deal Simulator Form */}
         {showSimulator && (
@@ -712,6 +993,15 @@ export const TransactionAuditSuite: React.FC<TransactionAuditSuiteProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Executive PDF / Written Report Modal */}
+      <PdfReportDialog
+        isOpen={showPdfReport}
+        onClose={() => setShowPdfReport(false)}
+        brokerageName={activeWorkspace.name}
+        transactions={transactions}
+        onRequestAsyncFullAudit={onOpenAsyncModal}
+      />
 
       {/* Line-by-Line Audit Inspection Modal */}
       {selectedTx && (
