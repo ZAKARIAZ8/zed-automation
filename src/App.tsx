@@ -1,29 +1,46 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { AgitationSection } from './components/AgitationSection';
 import { CommissionAuditBanner } from './components/CommissionAuditBanner';
+import { TransactionAuditSuite } from './components/TransactionAuditSuite';
 import { InfrastructureSection } from './components/InfrastructureSection';
 import { ComparisonAndProcessSection } from './components/ComparisonAndProcessSection';
 import { FaqAndFooterSection } from './components/FaqAndFooterSection';
+import { AsyncAuditModal } from './components/AsyncAuditModal';
 
-export default function App() {
+export function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [prefillLeakage, setPrefillLeakage] = useState<number | undefined>(
+    undefined
+  );
+
+  const handleOpenAsyncModal = (estimatedLeakage?: number) => {
+    setPrefillLeakage(estimatedLeakage);
+    setIsModalOpen(true);
+  };
+
   return (
-    <div className="min-h-screen bg-[#090A0F] text-slate-100 flex flex-col">
-      <Navbar />
-      <main className="flex-1">
-        <HeroSection />
+    <div className="min-h-screen bg-[#080A0F] text-slate-100 selection:bg-emerald-500/30 selection:text-emerald-200">
+      <Navbar onOpenAsyncModal={() => handleOpenAsyncModal()} />
+      <main>
+        <HeroSection onOpenAsyncModal={() => handleOpenAsyncModal()} />
         <AgitationSection />
-        <CommissionAuditBanner />
+        <CommissionAuditBanner onOpenAsyncModal={handleOpenAsyncModal} />
+        <TransactionAuditSuite onOpenAsyncModal={handleOpenAsyncModal} />
         <InfrastructureSection />
-        <ComparisonAndProcessSection />
-        <FaqAndFooterSection />
+        <ComparisonAndProcessSection
+          onOpenAsyncModal={() => handleOpenAsyncModal()}
+        />
+        <FaqAndFooterSection onOpenAsyncModal={() => handleOpenAsyncModal()} />
       </main>
+      <AsyncAuditModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        estimatedLeakage={prefillLeakage}
+      />
     </div>
   );
 }
+
+export default App;
