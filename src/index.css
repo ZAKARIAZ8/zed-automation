@@ -9,7 +9,7 @@
 
   body {
     font-family: var(--font-sans);
-    background-color: #090A0F;
+    background-color: #040807;
     color: #F1F5F9;
     overflow-x: hidden;
   }
@@ -20,10 +20,103 @@
   }
 }
 
-.bg-subtle-grid {
+/* Smoked Obsidian-Emerald Architectural Grid */
+.bg-emerald-grid {
   background-size: 48px 48px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(16, 185, 129, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
 }
 
+.bg-subtle-grid {
+  background-size: 48px 48px;
+  background-image:
+    linear-gradient(to right, rgba(16, 185, 129, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+}
+
+/* Top specular highlight & smoked glass surface */
+.glass-obsidian-card {
+  position: relative;
+  background-color: rgba(11, 18, 16, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  box-shadow:
+    0 20px 50px -15px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 0 rgba(52, 211, 153, 0.28);
+}
+
+/* Animated Glowing Border Beam for Comparison Highlight */
+@keyframes borderBeamRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.border-beam-emerald {
+  position: relative;
+}
+
+.border-beam-emerald::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(
+    120deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(52, 211, 153, 0.85),
+    rgba(20, 184, 166, 0.2),
+    rgba(16, 185, 129, 0.8)
+  );
+  background-size: 250% 250%;
+  animation: borderBeamRotate 5s ease infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Infinite Horizontal Marquee */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Subtle Drifting Emerald Aurora Waves */
+@keyframes auroraDrift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(28px, -18px, 0) scale(1.06);
+  }
+}
+
+.animate-aurora-slow {
+  animation: auroraDrift 14s ease-in-out infinite;
+}

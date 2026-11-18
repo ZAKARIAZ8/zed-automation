@@ -7,6 +7,7 @@ import { InfrastructureSection } from './components/InfrastructureSection';
 import { ComparisonAndProcessSection } from './components/ComparisonAndProcessSection';
 import { FaqAndFooterSection } from './components/FaqAndFooterSection';
 import { AsyncAuditModal } from './components/AsyncAuditModal';
+import { AuroraBackdrop } from './components/ui/MotionPrimitives';
 
 export function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,20 +21,23 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080A0F] text-slate-100 selection:bg-emerald-500/30 selection:text-emerald-200">
-      <Navbar onOpenAsyncModal={() => handleOpenAsyncModal()} />
-      <main>
-        <HeroSection onOpenAsyncModal={() => handleOpenAsyncModal()} />
-        <AgitationSection />
-        <CommissionAuditBanner onOpenAsyncModal={handleOpenAsyncModal} />
-        <InfrastructureSection
-          onOpenAsyncModal={() => handleOpenAsyncModal()}
-        />
-        <ComparisonAndProcessSection
-          onOpenAsyncModal={() => handleOpenAsyncModal()}
-        />
-        <FaqAndFooterSection onOpenAsyncModal={() => handleOpenAsyncModal()} />
-      </main>
+    <div className="relative min-h-screen bg-[#040807] bg-emerald-grid text-slate-100 selection:bg-emerald-500/30 selection:text-emerald-200 overflow-x-hidden">
+      <AuroraBackdrop />
+      <div className="relative z-10">
+        <Navbar onOpenAsyncModal={() => handleOpenAsyncModal()} />
+        <main>
+          <HeroSection onOpenAsyncModal={() => handleOpenAsyncModal()} />
+          <AgitationSection />
+          <CommissionAuditBanner onOpenAsyncModal={handleOpenAsyncModal} />
+          <InfrastructureSection
+            onOpenAsyncModal={() => handleOpenAsyncModal()}
+          />
+          <ComparisonAndProcessSection
+            onOpenAsyncModal={() => handleOpenAsyncModal()}
+          />
+          <FaqAndFooterSection onOpenAsyncModal={() => handleOpenAsyncModal()} />
+        </main>
+      </div>
       <AsyncAuditModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

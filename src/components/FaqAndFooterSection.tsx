@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ChevronDown, ArrowRight, ShieldCheck, Mail } from 'lucide-react';
+import { MagneticButton, SpotlightCard } from './ui/MotionPrimitives';
 
 interface FaqItem {
   id: string;
@@ -18,7 +19,7 @@ const FAQ_ITEMS: FaqItem[] = [
     id: 'faq-2',
     question: 'Which Real Estate CRMs do you integrate with?',
     answer:
-      'We provide native, two-way API and webhook integrations with Follow Up Boss, KVCore, Lofty (formerly Chime), GoHighLevel, LionDesk, and Sierra Interactive. Every SMS thread, call recording, qualification summary, and calendar appointment syncs automatically to the lead’s contact record in real time.',
+      'We provide native, two-way API and webhook integrations with Follow Up Boss, KVCore, Lofty (formerly Chime), GoHighLevel, LionDesk, and Sierra Interactive. Every SMS thread, qualification summary, and calendar appointment syncs automatically to the lead’s contact record in real time.',
   },
   {
     id: 'faq-3',
@@ -50,12 +51,12 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
   return (
     <>
       {/* Part H: Real Estate FAQ Section (Interactive Accordion) */}
-      <section id="faq" className="py-24 bg-[#090A0F] border-b border-white/10">
+      <section id="faq" className="py-24 bg-[#040807] border-b border-emerald-500/15">
         <div className="max-w-4xl mx-auto px-6">
           <div className="space-y-4 text-center">
             <div className="flex items-center justify-center gap-2 text-xs font-medium text-emerald-400">
               <span>Brokerage Due Diligence</span>
-              <span aria-hidden="true" className="text-slate-600">·</span>
+              <span aria-hidden="true" className="text-emerald-500/40">·</span>
               <span className="text-slate-400 font-mono">Frequently Asked Questions</span>
             </div>
 
@@ -70,14 +71,14 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
               return (
                 <div
                   key={item.id}
-                  className="rounded-2xl backdrop-blur-md bg-[#11131C]/90 border border-white/10 overflow-hidden transition-colors"
+                  className="rounded-2xl glass-obsidian-card overflow-hidden transition-colors"
                 >
                   <button
                     type="button"
                     onClick={() => toggleFaq(item.id)}
                     aria-expanded={isOpen}
                     aria-controls={`${item.id}-content`}
-                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer"
                   >
                     <span className="text-base font-bold text-white flex items-center gap-3">
                       <span className="font-mono text-xs text-emerald-400">
@@ -95,7 +96,7 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
                   {isOpen && (
                     <div
                       id={`${item.id}-content`}
-                      className="px-6 pb-6 pt-1 text-sm text-slate-300 leading-relaxed border-t border-white/5"
+                      className="px-6 pb-6 pt-1 text-sm text-slate-300 leading-relaxed border-t border-emerald-500/15"
                     >
                       {item.answer}
                     </div>
@@ -108,80 +109,89 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
       </section>
 
       {/* Part I: High-Converting Footer & Final CTA */}
-      <footer className="bg-[#090A0F] pt-20 pb-14 relative overflow-hidden">
+      <footer className="bg-[#040807] pt-20 pb-14 relative overflow-hidden">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[850px] h-[320px] bg-gradient-to-t from-emerald-500/15 via-indigo-500/10 to-transparent blur-3xl"
+          className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[850px] h-[320px] bg-gradient-to-t from-emerald-500/18 via-teal-500/10 to-transparent blur-3xl"
         />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 space-y-16">
           {/* Final Bold Callout Banner */}
-          <div className="rounded-3xl backdrop-blur-xl bg-gradient-to-b from-[#131724] to-[#0C0E16] border border-white/10 p-8 sm:p-14 text-center max-w-4xl mx-auto space-y-6 shadow-2xl">
-            <div className="text-xs font-mono text-emerald-400 uppercase tracking-wider">
-              Stop Losing Deals to Faster Competitors
-            </div>
+          <SpotlightCard hoverLift={false} className="p-8 sm:p-14 text-center max-w-4xl mx-auto">
+            <div className="space-y-6">
+              <div className="text-xs font-mono text-emerald-400 uppercase tracking-wider">
+                Stop Losing Deals to Faster Competitors
+              </div>
 
-            <h2
-              className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight"
-              style={{ textWrap: 'balance' }}
-            >
-              Ready to Recover Your Unclaimed Commissions?
-            </h2>
-
-            <p className="text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              See exactly how much GCI your brokerage is leaking every month—and receive a line-by-line written audit showing how our 24/7 Speed-to-Lead &amp; Database Reactivation infrastructure locks those closings back onto your calendar in 14 days.
-            </p>
-
-            <div className="pt-2 flex flex-col items-center justify-center gap-4">
-              <button
-                type="button"
-                onClick={() => onOpenAsyncModal?.()}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_35px_rgba(16,185,129,0.4)] whitespace-nowrap shrink-0 cursor-pointer"
+              <h2
+                className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight"
+                style={{ textWrap: 'balance' }}
               >
-                <span>Run Your Free Commission Audit Now</span>
-                <ArrowRight className="w-4 h-4 shrink-0" />
-              </button>
+                Ready to Recover Your Unclaimed Commissions?
+              </h2>
 
-              <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400">
-                <ShieldCheck className="w-4 h-4 shrink-0" />
-                <span>100% Written Audit via Email or LinkedIn • Zero Sales Calls</span>
+              <p className="text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                See exactly how much GCI your brokerage is leaking every month—and receive a line-by-line written audit showing how our 24/7 Speed-to-Lead &amp; Database Reactivation infrastructure locks those closings back onto your calendar in 14 days.
+              </p>
+
+              <div className="pt-2 flex flex-col items-center justify-center gap-4">
+                <MagneticButton
+                  onClick={() => onOpenAsyncModal?.()}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-bold text-[#040807] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_38px_rgba(16,185,129,0.45)] whitespace-nowrap shrink-0"
+                >
+                  <span>Run Your Free Commission Audit Now</span>
+                  <ArrowRight className="w-4 h-4 shrink-0" />
+                </MagneticButton>
+
+                <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400">
+                  <ShieldCheck className="w-4 h-4 shrink-0" />
+                  <span>100% Written Audit via Email or LinkedIn • Zero Sales Calls</span>
+                </div>
               </div>
             </div>
-          </div>
+          </SpotlightCard>
 
-          {/* Quiet Footer Bottom Bar (No external link to delivery tool) */}
-          <div className="pt-10 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-slate-400">
-            <div className="flex items-center gap-3">
+          {/* Quiet Footer Bottom Bar with zakaria@zedautomations.tech */}
+          <div className="pt-10 border-t border-emerald-500/15 flex flex-col lg:flex-row items-center justify-between gap-6 text-xs text-slate-400">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
               <span
                 aria-hidden="true"
-                className="w-6 h-6 rounded-md bg-emerald-400 flex items-center justify-center text-[#090A0F] font-extrabold font-mono text-xs"
+                className="w-6 h-6 rounded-md bg-emerald-400 flex items-center justify-center text-[#040807] font-extrabold font-mono text-xs"
               >
                 Z
               </span>
               <span className="font-bold text-white">Zed Automation</span>
-              <span aria-hidden="true">·</span>
-              <span>Autonomous AI Revenue Recovery</span>
+              <span aria-hidden="true" className="text-emerald-500/40">·</span>
+              <span className="font-mono text-emerald-400/90">zedautomations.tech</span>
+              <span aria-hidden="true" className="text-emerald-500/40">·</span>
+              <a
+                href="mailto:zakaria@zedautomations.tech"
+                className="inline-flex items-center gap-1.5 font-mono text-slate-300 hover:text-emerald-300 transition-colors"
+              >
+                <Mail className="w-3.5 h-3.5 text-emerald-400" />
+                <span>zakaria@zedautomations.tech</span>
+              </a>
             </div>
 
-            <div className="flex flex-wrap items-center gap-6">
-              <a href="#problem" className="hover:text-white transition-colors">
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              <a href="#problem" className="hover:text-emerald-300 transition-colors">
                 The Problem
               </a>
-              <a href="#calculator" className="hover:text-white transition-colors">
+              <a href="#calculator" className="hover:text-emerald-300 transition-colors">
                 ROI Calculator
               </a>
-              <a href="#infrastructure" className="hover:text-white transition-colors">
+              <a href="#infrastructure" className="hover:text-emerald-300 transition-colors">
                 AI Infrastructure
               </a>
-              <a href="#case-studies" className="hover:text-white transition-colors">
+              <a href="#case-studies" className="hover:text-emerald-300 transition-colors">
                 Case Studies
               </a>
-              <a href="#faq" className="hover:text-white transition-colors">
+              <a href="#faq" className="hover:text-emerald-300 transition-colors">
                 FAQ
               </a>
             </div>
 
-            <p className="text-slate-400 text-center sm:text-right">
+            <p className="text-slate-400 text-center lg:text-right">
               © 2026 Zed Automation. Built for High-Performing US Real Estate Teams.
             </p>
           </div>

@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { ArrowRight, CalendarCheck, CheckCircle2, PhoneCall, RotateCcw, ShieldCheck } from 'lucide-react';
+import { motion } from 'motion/react';
+import {
+  ArrowRight,
+  CalendarCheck,
+  CheckCircle2,
+  FileSpreadsheet,
+  RotateCcw,
+  ShieldCheck,
+} from 'lucide-react';
+import {
+  AnimatedNumber,
+  ExecutiveAuditHeader,
+  MagneticButton,
+  SpotlightCard,
+  TrustMarquee,
+} from './ui/MotionPrimitives';
 
 interface LeadScenario {
   id: 'zillow' | 'realtor' | 'meta';
@@ -14,6 +29,7 @@ interface LeadScenario {
   step3Title: string;
   step3Detail: string;
   estCommission: string;
+  estCommissionNumber: number;
   crmTarget: string;
   responseTime: string;
 }
@@ -32,6 +48,7 @@ const LEAD_SCENARIOS: Record<LeadScenario['id'], LeadScenario> = {
     step3Title: 'Buyer Pre-Approved & Inspection Booked on Calendar',
     step3Detail: 'Consultation + Private Showing locked on Senior Buyer Agent calendar · Sat 11:00 AM.',
     estCommission: '$14,500',
+    estCommissionNumber: 14500,
     crmTarget: 'Follow Up Boss',
     responseTime: '0:32s',
   },
@@ -48,6 +65,7 @@ const LEAD_SCENARIOS: Record<LeadScenario['id'], LeadScenario> = {
     step3Title: 'Listing Valuation & Buyer Consult Booked on Calendar',
     step3Detail: 'Dual-side opportunity assigned to Listing Partner with full AI transcript note.',
     estCommission: '$22,200',
+    estCommissionNumber: 22200,
     crmTarget: 'KVCore',
     responseTime: '0:28s',
   },
@@ -64,6 +82,7 @@ const LEAD_SCENARIOS: Record<LeadScenario['id'], LeadScenario> = {
     step3Title: 'Buyer Consultation Booked on Calendar',
     step3Detail: 'High-intent buyer transferred live to Team Leader calendar with audio summary.',
     estCommission: '$16,120',
+    estCommissionNumber: 16120,
     crmTarget: 'Lofty / Chime',
     responseTime: '0:39s',
   },
@@ -86,23 +105,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
   };
 
   return (
-    <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-28 bg-subtle-grid border-b border-white/10 overflow-hidden">
-      {/* Ambient Radial Illumination */}
+    <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-24 border-b border-emerald-500/15 overflow-hidden">
+      {/* Ambient Radial Emerald Aurora Illumination */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[420px] bg-gradient-to-tr from-emerald-500/15 via-indigo-500/10 to-transparent blur-3xl"
+        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[960px] h-[440px] bg-gradient-to-tr from-emerald-500/18 via-teal-500/10 to-transparent blur-3xl"
       />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* 2-Column Split Hero */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-stretch">
           {/* Left Column: High-Converting Copy & Actions */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-7 flex flex-col justify-between space-y-8"
+          >
             <div className="space-y-6">
               {/* Unboxed Editorial Kicker (Zero-Pill Discipline) */}
               <div className="flex flex-wrap items-center gap-2 text-xs font-medium tracking-wide text-emerald-400">
-                <span>⚡ Built Exclusively for US Real Estate Teams & Brokerages</span>
-                <span aria-hidden="true" className="text-slate-600">·</span>
+                <span>⚡ Built Exclusively for US Real Estate Teams &amp; Brokerages</span>
+                <span aria-hidden="true" className="text-emerald-500/40">·</span>
                 <span className="text-slate-400 font-mono">$5M+ Annual Volume Infrastructure</span>
               </div>
 
@@ -128,18 +152,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
             {/* Primary & Secondary CTAs */}
             <div className="space-y-5 pt-2">
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <button
-                  type="button"
+                <MagneticButton
                   onClick={() => onOpenAsyncModal?.()}
-                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-4 text-xs sm:text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_35px_rgba(16,185,129,0.35)] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-4 text-xs sm:text-sm font-bold text-[#040807] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_38px_rgba(16,185,129,0.4)] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                 >
                   <span>Audit Your Leaked GCI (Free 90-Day Written Audit)</span>
                   <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
+                </MagneticButton>
 
                 <a
                   href="#infrastructure"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-4 text-xs sm:text-sm font-semibold text-slate-200 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors duration-150 whitespace-nowrap shrink-0"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-4 text-xs sm:text-sm font-semibold text-slate-200 bg-[#0B1210]/75 hover:bg-emerald-500/10 border border-emerald-500/20 rounded-xl transition-colors duration-150 whitespace-nowrap shrink-0"
                 >
                   <span>See How The System Works</span>
                 </a>
@@ -156,166 +179,185 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
                 <span>14-day turnkey installation</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Column: Interactive Live Speed-to-Lead Timeline Mockup */}
-          <div className="lg:col-span-5 flex flex-col">
-            <div className="h-full rounded-2xl backdrop-blur-md bg-[#11131C]/90 border border-white/10 p-6 flex flex-col justify-between shadow-2xl">
-              {/* Mockup Header & Interactive Portal Switcher */}
-              <div className="space-y-4 pb-5 border-b border-white/10">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <p className="text-xs font-mono text-emerald-400 uppercase tracking-wider">
-                      Autonomous Pipeline Execution
-                    </p>
-                    <h2 className="text-sm font-semibold text-white mt-0.5">
-                      Live Lead-to-Calendar Telemetry
-                    </h2>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleReplaySequence}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors whitespace-nowrap shrink-0"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Simulate</span>
-                  </button>
-                </div>
-
-                {/* Interactive Segmented Control for Lead Source */}
-                <div
-                  role="group"
-                  aria-label="Select Lead Source Scenario"
-                  className="grid grid-cols-3 gap-1.5 p-1 bg-[#090A0F] rounded-xl border border-white/10"
-                >
-                  {(['zillow', 'realtor', 'meta'] as const).map((key) => {
-                    const item = LEAD_SCENARIOS[key];
-                    const isSelected = selectedScenario === key;
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => {
-                          setSelectedScenario(key);
-                          setActiveStep(3);
-                        }}
-                        className={`px-2 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap truncate ${
-                          isSelected
-                            ? 'bg-indigo-500/20 text-indigo-200 border border-indigo-500/40 shadow-sm'
-                            : 'text-slate-400 hover:text-slate-200'
-                        }`}
-                      >
-                        {item.portalLabel}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Lead Context Summary Row */}
-                <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
-                  <span className="truncate">
-                    Prospect: <strong className="text-slate-200 font-medium">{scenario.leadName}</strong>
-                  </span>
-                  <span className="font-mono text-slate-300 shrink-0">
-                    List: {scenario.listPrice}
-                  </span>
-                </div>
-              </div>
-
-              {/* Timeline Steps (0:00s -> 0:32s -> 2:15s) */}
-              <div className="py-5 space-y-4">
-                {/* Step 1: 0:00s */}
-                <div
-                  className={`p-3.5 rounded-xl border transition-all duration-200 ${
-                    activeStep >= 1
-                      ? 'bg-white/[0.04] border-white/10 opacity-100'
-                      : 'bg-white/[0.01] border-white/5 opacity-40'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-white flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0" />
-                      {scenario.step1Title}
-                    </span>
-                    <span className="font-mono text-indigo-300 font-semibold shrink-0">0:00s</span>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                    {scenario.step1Detail}
-                  </p>
-                </div>
-
-                {/* Step 2: 0:32s */}
-                <div
-                  className={`p-3.5 rounded-xl border transition-all duration-200 ${
-                    activeStep >= 2
-                      ? 'bg-indigo-500/[0.08] border-indigo-500/30 opacity-100'
-                      : 'bg-white/[0.01] border-white/5 opacity-40'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-white flex items-center gap-2">
-                      <PhoneCall className="w-4 h-4 text-indigo-400 shrink-0" />
-                      {scenario.step2Title}
-                    </span>
-                    <span className="font-mono text-indigo-300 font-semibold shrink-0">
-                      {scenario.responseTime}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
-                    {scenario.step2Detail}
-                  </p>
-                </div>
-
-                {/* Step 3: 2:15s */}
-                <div
-                  className={`p-3.5 rounded-xl border transition-all duration-200 ${
-                    activeStep >= 3
-                      ? 'bg-emerald-500/[0.08] border-emerald-500/30 opacity-100'
-                      : 'bg-white/[0.01] border-white/5 opacity-40'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-white flex items-center gap-2">
-                      <CalendarCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                      {scenario.step3Title}
-                    </span>
-                    <span className="font-mono text-emerald-300 font-semibold shrink-0">2:15s</span>
-                  </div>
-                  <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
-                    {scenario.step3Detail}
-                  </p>
-                </div>
-              </div>
-
-              {/* Bottom Locked Commission Callout Bar */}
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-5 flex flex-col"
+          >
+            <SpotlightCard hoverLift={false} className="h-full p-6 flex flex-col justify-between">
+              <div className="h-full flex flex-col justify-between">
+                {/* Clean Corporate Executive Framing Header */}
                 <div>
-                  <span className="text-xs text-slate-400 block">
-                    CRM Synced: <strong className="text-slate-200">{scenario.crmTarget}</strong>
-                  </span>
-                  <span className="text-xs text-emerald-400 font-medium flex items-center gap-1 mt-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                    Est. Commission Locked
-                  </span>
+                  <ExecutiveAuditHeader
+                    badge="Executive Brokerage Telemetry"
+                    referenceId="ALTA-SYNC-V2.5"
+                    statusText="ZERO-CALL AUTOMATION"
+                  />
+
+                  {/* Mockup Header & Interactive Portal Switcher */}
+                  <div className="space-y-4 pb-5 border-b border-emerald-500/15">
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <p className="text-xs font-mono text-emerald-400 uppercase tracking-wider">
+                          Autonomous Pipeline Execution
+                        </p>
+                        <h2 className="text-sm font-semibold text-white mt-0.5">
+                          Live Lead-to-Calendar Telemetry
+                        </h2>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleReplaySequence}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-[#040807]/80 hover:bg-emerald-500/15 border border-emerald-500/25 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Simulate</span>
+                      </button>
+                    </div>
+
+                    {/* Interactive Segmented Control for Lead Source */}
+                    <div
+                      role="group"
+                      aria-label="Select Lead Source Scenario"
+                      className="grid grid-cols-3 gap-1.5 p-1 bg-[#040807] rounded-xl border border-emerald-500/20"
+                    >
+                      {(['zillow', 'realtor', 'meta'] as const).map((key) => {
+                        const item = LEAD_SCENARIOS[key];
+                        const isSelected = selectedScenario === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => {
+                              setSelectedScenario(key);
+                              setActiveStep(3);
+                            }}
+                            className={`px-2 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap truncate cursor-pointer ${
+                              isSelected
+                                ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/40 shadow-sm'
+                                : 'text-slate-400 hover:text-slate-200'
+                            }`}
+                          >
+                            {item.portalLabel}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Lead Context Summary Row */}
+                    <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+                      <span className="truncate">
+                        Prospect: <strong className="text-slate-200 font-medium">{scenario.leadName}</strong>
+                      </span>
+                      <span className="font-mono text-emerald-300 shrink-0">
+                        List: {scenario.listPrice}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-2xl font-extrabold font-mono text-emerald-400 tracking-tight">
-                    {scenario.estCommission}
-                  </span>
-                  <span className="block text-[11px] font-mono text-slate-400">
-                    0% ISA Split Deducted
-                  </span>
+
+                {/* Timeline Steps (0:00s -> 0:32s -> 2:15s) */}
+                <div className="py-5 space-y-3.5">
+                  {/* Step 1: 0:00s */}
+                  <div
+                    className={`p-3.5 rounded-xl border transition-all duration-200 ${
+                      activeStep >= 1
+                        ? 'bg-[#040807]/85 border-emerald-500/20 opacity-100'
+                        : 'bg-[#040807]/30 border-white/5 opacity-40'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-semibold text-white flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                        {scenario.step1Title}
+                      </span>
+                      <span className="font-mono text-emerald-300 font-semibold shrink-0">0:00s</span>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                      {scenario.step1Detail}
+                    </p>
+                  </div>
+
+                  {/* Step 2: 0:32s */}
+                  <div
+                    className={`p-3.5 rounded-xl border transition-all duration-200 ${
+                      activeStep >= 2
+                        ? 'bg-emerald-500/[0.08] border-emerald-500/30 opacity-100'
+                        : 'bg-[#040807]/30 border-white/5 opacity-40'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-semibold text-white flex items-center gap-2">
+                        <FileSpreadsheet className="w-4 h-4 text-emerald-400 shrink-0" />
+                        {scenario.step2Title}
+                      </span>
+                      <span className="font-mono text-emerald-300 font-semibold shrink-0">
+                        {scenario.responseTime}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                      {scenario.step2Detail}
+                    </p>
+                  </div>
+
+                  {/* Step 3: 2:15s */}
+                  <div
+                    className={`p-3.5 rounded-xl border transition-all duration-200 ${
+                      activeStep >= 3
+                        ? 'bg-emerald-500/[0.12] border-emerald-500/40 opacity-100'
+                        : 'bg-[#040807]/30 border-white/5 opacity-40'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-semibold text-white flex items-center gap-2">
+                        <CalendarCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                        {scenario.step3Title}
+                      </span>
+                      <span className="font-mono text-emerald-300 font-semibold shrink-0">2:15s</span>
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                      {scenario.step3Detail}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom Locked Commission Callout Bar */}
+                <div className="pt-4 border-t border-emerald-500/15 flex items-center justify-between gap-4">
+                  <div>
+                    <span className="text-xs text-slate-400 block">
+                      CRM Synced: <strong className="text-slate-200">{scenario.crmTarget}</strong>
+                    </span>
+                    <span className="text-xs text-emerald-400 font-medium flex items-center gap-1 mt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                      Est. Commission Locked
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-2xl font-extrabold font-mono text-emerald-400 tracking-tight">
+                      <AnimatedNumber
+                        value={scenario.estCommissionNumber}
+                        prefix="$"
+                      />
+                    </span>
+                    <span className="block text-[11px] font-mono text-slate-400">
+                      0% ISA Split Deducted
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </SpotlightCard>
+          </motion.div>
         </div>
 
         {/* Full-Width 4-Column Trust Metrics Bar below Hero */}
-        <div className="mt-14 pt-10 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-5 rounded-xl backdrop-blur-md bg-white/[0.03] border border-white/10">
+        <div className="mt-14 pt-10 border-t border-emerald-500/15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <SpotlightCard className="p-5">
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">
-              &lt; 45 Sec
+              <AnimatedNumber value={45} prefix="< " suffix=" Sec" />
             </div>
             <div className="text-sm font-semibold text-white mt-1">
               Average Lead Response Time
@@ -323,11 +365,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
             <p className="text-xs text-slate-400 mt-1">
               Instant SMS &amp; conversational AI voice outreach before competitors unlock their phones.
             </p>
-          </div>
+          </SpotlightCard>
 
-          <div className="p-5 rounded-xl backdrop-blur-md bg-white/[0.03] border border-white/10">
+          <SpotlightCard className="p-5">
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight">
-              3.4x
+              <AnimatedNumber value={3.4} decimals={1} suffix="x" />
             </div>
             <div className="text-sm font-semibold text-white mt-1">
               Increase in Set Appointments
@@ -335,11 +377,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
             <p className="text-xs text-slate-400 mt-1">
               Verified across US realty teams spending $3k–$25k/mo on Zillow, Realtor.com &amp; Meta.
             </p>
-          </div>
+          </SpotlightCard>
 
-          <div className="p-5 rounded-xl backdrop-blur-md bg-white/[0.03] border border-white/10">
+          <SpotlightCard className="p-5">
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">
-              $0
+              <AnimatedNumber value={0} prefix="$" />
             </div>
             <div className="text-sm font-semibold text-white mt-1">
               Extra ISA Payroll Overhead
@@ -347,10 +389,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
             <p className="text-xs text-slate-400 mt-1">
               Eliminate $4,500/mo base salaries, W2 payroll taxes, and 15% inside sales commission splits.
             </p>
-          </div>
+          </SpotlightCard>
 
-          <div className="p-5 rounded-xl backdrop-blur-md bg-white/[0.03] border border-white/10">
-            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-indigo-400 tracking-tight">
+          <SpotlightCard className="p-5">
+            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-300 tracking-tight">
               24/7/365
             </div>
             <div className="text-sm font-semibold text-white mt-1">
@@ -359,8 +401,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
             <p className="text-xs text-slate-400 mt-1">
               Native two-way integration with Follow Up Boss, KVCore, GoHighLevel, and Lofty (Chime).
             </p>
-          </div>
+          </SpotlightCard>
         </div>
+
+        {/* Infinite Horizontal Trust Marquee */}
+        <TrustMarquee />
       </div>
     </section>
   );

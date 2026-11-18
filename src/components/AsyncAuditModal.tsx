@@ -9,6 +9,7 @@ import {
   ArrowRight,
   FileText,
 } from 'lucide-react';
+import { AUDIT_TOOL_URL } from '../utils/commissionCalculator';
 
 interface AsyncAuditModalProps {
   isOpen: boolean;
@@ -42,11 +43,17 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-lg rounded-2xl bg-[#111520] border border-white/15 p-6 sm:p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#040807]/85 backdrop-blur-xl">
+      <div className="relative w-full max-w-lg rounded-2xl glass-obsidian-card p-6 sm:p-8 shadow-2xl overflow-hidden">
+        {/* Top Specular Highlight */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent"
+        />
+
         <button
           onClick={resetAndClose}
-          className="absolute top-5 right-5 p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-lg bg-[#040807]/80 border border-emerald-500/20 text-slate-400 hover:text-white transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -54,7 +61,7 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
 
         {!submitted ? (
           <>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono mb-4">
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono mb-4">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>100% ASYNCHRONOUS • ZERO SALES CALLS</span>
             </div>
@@ -62,16 +69,16 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
             <h3 className="text-2xl font-bold text-white tracking-tight">
               Request Your Free 90-Day Written Commission Audit
             </h3>
-            <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+            <p className="mt-2 text-sm text-slate-300 leading-relaxed">
               No Zoom pitches. Tell us where to send your secure CSV upload instructions, and we will message back your line-by-line leakage breakdown within 24 hours.
             </p>
 
             {estimatedLeakage && estimatedLeakage > 0 ? (
-              <div className="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+              <div className="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between">
                 <span className="text-xs text-emerald-300">
                   Target Recoverable GCI Identified:
                 </span>
-                <span className="text-sm font-mono font-bold text-emerald-400">
+                <span className="text-sm font-mono font-bold text-emerald-400 tabular-nums">
                   ${estimatedLeakage.toLocaleString()}
                 </span>
               </div>
@@ -81,7 +88,7 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Your Name & Role *
+                    Your Name &amp; Role *
                   </label>
                   <input
                     type="text"
@@ -89,7 +96,7 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                     placeholder="e.g. John Miller, Managing Broker"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#080A0F] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#040807] border border-emerald-500/20 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
                   />
                 </div>
                 <div>
@@ -102,7 +109,7 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                     placeholder="e.g. Apex Realty Group (TX)"
                     value={brokerageName}
                     onChange={(e) => setBrokerageName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#080A0F] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#040807] border border-emerald-500/20 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
                   />
                 </div>
               </div>
@@ -115,10 +122,10 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setChannel('email')}
-                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-medium transition-colors ${
+                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                       channel === 'email'
-                        ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400'
-                        : 'bg-[#080A0F] border-white/10 text-slate-400 hover:text-white'
+                        ? 'bg-emerald-500/15 border-emerald-400 text-emerald-300'
+                        : 'bg-[#040807] border-emerald-500/20 text-slate-400 hover:text-white'
                     }`}
                   >
                     <Mail className="w-3.5 h-3.5" />
@@ -127,10 +134,10 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setChannel('linkedin')}
-                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-medium transition-colors ${
+                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                       channel === 'linkedin'
-                        ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400'
-                        : 'bg-[#080A0F] border-white/10 text-slate-400 hover:text-white'
+                        ? 'bg-emerald-500/15 border-emerald-400 text-emerald-300'
+                        : 'bg-[#040807] border-emerald-500/20 text-slate-400 hover:text-white'
                     }`}
                   >
                     <Linkedin className="w-3.5 h-3.5" />
@@ -139,10 +146,10 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setChannel('sms')}
-                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-medium transition-colors ${
+                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                       channel === 'sms'
-                        ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400'
-                        : 'bg-[#080A0F] border-white/10 text-slate-400 hover:text-white'
+                        ? 'bg-emerald-500/15 border-emerald-400 text-emerald-300'
+                        : 'bg-[#040807] border-emerald-500/20 text-slate-400 hover:text-white'
                     }`}
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
@@ -162,7 +169,7 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                   }
                   value={contactHandle}
                   onChange={(e) => setContactHandle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#080A0F] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#040807] border border-emerald-500/20 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
                 />
               </div>
 
@@ -174,7 +181,7 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                   <select
                     value={crmSystem}
                     onChange={(e) => setCrmSystem(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#080A0F] border border-white/10 text-sm text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#040807] border border-emerald-500/20 text-sm text-white focus:outline-none focus:border-emerald-400"
                   >
                     <option value="SkySlope">SkySlope</option>
                     <option value="Dotloop">Dotloop</option>
@@ -195,7 +202,7 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
                   <select
                     value={monthlyDeals}
                     onChange={(e) => setMonthlyDeals(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#080A0F] border border-white/10 text-sm text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#040807] border border-emerald-500/20 text-sm text-white focus:outline-none focus:border-emerald-400"
                   >
                     <option value="5–15 closings/mo">5–15 closings/mo</option>
                     <option value="15–40 closings/mo">15–40 closings/mo</option>
@@ -207,11 +214,16 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
 
               <button
                 type="submit"
-                className="w-full mt-2 py-3.5 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
+                className="w-full mt-2 py-3.5 px-6 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-[#040807] font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_30px_rgba(16,185,129,0.35)] cursor-pointer"
               >
                 <span>Send My Written Audit Instructions</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
+
+              <div className="pt-2 border-t border-emerald-500/15 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400">
+                <span>Direct Desk: zakaria@zedautomations.tech</span>
+                <span className="text-emerald-400/80">audit.zedautomations.tech</span>
+              </div>
             </form>
           </>
         ) : (
@@ -222,29 +234,29 @@ export const AsyncAuditModal: React.FC<AsyncAuditModalProps> = ({
             <h3 className="text-2xl font-bold text-white">
               Written Audit Request Queued
             </h3>
-            <p className="mt-2 text-sm text-slate-400 max-w-md mx-auto leading-relaxed">
+            <p className="mt-2 text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
               Thank you, <span className="text-white font-medium">{fullName}</span>. We are sending your secure {crmSystem} CSV export template to{' '}
               <span className="text-emerald-400 font-mono">{contactHandle}</span>{' '}
               via {channel.toUpperCase()}.
             </p>
-            <div className="mt-6 p-4 rounded-xl bg-[#080A0F] border border-white/10 text-left text-xs text-slate-300 space-y-2">
+            <div className="mt-6 p-4 rounded-xl bg-[#040807] border border-emerald-500/20 text-left text-xs text-slate-300 space-y-2">
               <div className="flex items-center gap-2 text-emerald-400 font-semibold">
                 <FileText className="w-4 h-4" />
                 <span>What Happens Next (Zero Calls):</span>
               </div>
               <p>1. Reply with your anonymized 90-day closing export.</p>
               <p>
-                2. Our v2.5 Audit Engine scans every split tier, cap reset, and outbound referral.
+                2. Our v2.5 Audit Engine ({AUDIT_TOOL_URL.replace('https://', '')}) scans every split tier, cap reset, and outbound referral.
               </p>
               <p>
-                3. You receive a full written PDF & CSV recovery report within 24 hours.
+                3. You receive a full written PDF &amp; CSV recovery report within 24 hours from <span className="font-mono text-emerald-400">zakaria@zedautomations.tech</span>.
               </p>
             </div>
             <button
               onClick={resetAndClose}
-              className="mt-6 px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-colors"
+              className="mt-6 px-6 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-sm font-medium transition-colors cursor-pointer"
             >
-              Return to Audit Sandbox
+              Return to Landing Page
             </button>
           </div>
         )}

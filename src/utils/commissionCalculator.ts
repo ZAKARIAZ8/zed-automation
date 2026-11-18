@@ -1,4 +1,4 @@
-export const AUDIT_TOOL_URL = 'https://zed-automation-1.vercel.app/commission-audit';
+export const AUDIT_TOOL_URL = 'https://audit.zedautomations.tech/commission-audit';
 
 export interface LeakageInput {
   annualTransactions: number;
