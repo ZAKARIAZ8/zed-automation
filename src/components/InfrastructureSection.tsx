@@ -6,11 +6,16 @@ import {
   CheckCircle2,
   MessageSquare,
   Volume2,
-  ArrowUpRight,
+  ArrowRight,
 } from 'lucide-react';
-import { AUDIT_TOOL_URL } from '../utils/commissionCalculator';
 
-export const InfrastructureSection: React.FC = () => {
+interface InfrastructureSectionProps {
+  onOpenAsyncModal?: () => void;
+}
+
+export const InfrastructureSection: React.FC<InfrastructureSectionProps> = ({
+  onOpenAsyncModal,
+}) => {
   const [activeTranscriptTab, setActiveTranscriptTab] = useState<'sms' | 'voice'>('sms');
 
   const caseStudies = [
@@ -300,15 +305,14 @@ export const InfrastructureSection: React.FC = () => {
               </h2>
             </div>
 
-            <a
-              href={AUDIT_TOOL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+            <button
+              type="button"
+              onClick={() => onOpenAsyncModal?.()}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-[#090A0F] text-xs font-bold transition-colors whitespace-nowrap shrink-0 cursor-pointer shadow-[0_0_24px_rgba(16,185,129,0.25)]"
             >
               <span>Run Your Brokerage GCI Audit</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </a>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
 
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">

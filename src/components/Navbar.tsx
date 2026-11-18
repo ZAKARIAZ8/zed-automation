@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, Menu, X } from 'lucide-react';
-import { AUDIT_TOOL_URL } from '../utils/commissionCalculator';
+import { ArrowRight, Menu, X } from 'lucide-react';
 
 interface NavbarProps {
   onOpenAsyncModal?: () => void;
@@ -11,9 +10,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAsyncModal }) => {
 
   const navLinks = [
     { label: 'The Problem', href: '#problem' },
-    { label: 'Live Audit Sandbox', href: '#audit-engine' },
-    { label: 'Our AI Infrastructure', href: '#infrastructure' },
     { label: 'ROI Calculator', href: '#calculator' },
+    { label: 'Our AI Infrastructure', href: '#infrastructure' },
+    { label: 'Case Studies', href: '#case-studies' },
     { label: 'FAQ', href: '#faq' },
   ];
 
@@ -50,16 +49,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAsyncModal }) => {
           ))}
         </nav>
 
-        {/* Zone 3: 1 Primary Action */}
+        {/* Zone 3: 1 Primary Action -> Opens Async Written Audit Modal */}
         <div className="flex items-center gap-3 shrink-0">
-          <a
-            href={AUDIT_TOOL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-all duration-150 shadow-[0_0_24px_rgba(16,185,129,0.3)] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+          <button
+            type="button"
+            onClick={() => onOpenAsyncModal?.()}
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-all duration-150 shadow-[0_0_24px_rgba(16,185,129,0.3)] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer"
           >
             <span>Audit Your Leaked GCI →</span>
-          </a>
+          </button>
 
           <button
             type="button"
@@ -89,15 +87,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAsyncModal }) => {
             ))}
           </nav>
           <div className="pt-2 border-t border-white/10 flex flex-col gap-2.5">
-            <a
-              href={AUDIT_TOOL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 text-xs font-semibold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors"
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenAsyncModal?.();
+              }}
+              className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 text-xs font-semibold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors cursor-pointer"
             >
-              <span>Audit Your Leaked GCI →</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </a>
+              <span>Audit Your Leaked GCI</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       )}

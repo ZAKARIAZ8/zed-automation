@@ -3,7 +3,6 @@ import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { AgitationSection } from './components/AgitationSection';
 import { CommissionAuditBanner } from './components/CommissionAuditBanner';
-import { TransactionAuditSuite } from './components/TransactionAuditSuite';
 import { InfrastructureSection } from './components/InfrastructureSection';
 import { ComparisonAndProcessSection } from './components/ComparisonAndProcessSection';
 import { FaqAndFooterSection } from './components/FaqAndFooterSection';
@@ -27,8 +26,9 @@ export function App() {
         <HeroSection onOpenAsyncModal={() => handleOpenAsyncModal()} />
         <AgitationSection />
         <CommissionAuditBanner onOpenAsyncModal={handleOpenAsyncModal} />
-        <TransactionAuditSuite onOpenAsyncModal={handleOpenAsyncModal} />
-        <InfrastructureSection />
+        <InfrastructureSection
+          onOpenAsyncModal={() => handleOpenAsyncModal()}
+        />
         <ComparisonAndProcessSection
           onOpenAsyncModal={() => handleOpenAsyncModal()}
         />

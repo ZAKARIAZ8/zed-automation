@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, CalendarCheck, CheckCircle2, PhoneCall, MessageSquare, RotateCcw, ShieldCheck } from 'lucide-react';
-import { AUDIT_TOOL_URL } from '../utils/commissionCalculator';
+import { ArrowRight, CalendarCheck, CheckCircle2, PhoneCall, RotateCcw, ShieldCheck } from 'lucide-react';
 
 interface LeadScenario {
   id: 'zillow' | 'realtor' | 'meta';
@@ -129,15 +128,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
             {/* Primary & Secondary CTAs */}
             <div className="space-y-5 pt-2">
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <a
-                  href={AUDIT_TOOL_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-4 text-xs sm:text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_35px_rgba(16,185,129,0.35)] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                <button
+                  type="button"
+                  onClick={() => onOpenAsyncModal?.()}
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-4 text-xs sm:text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_35px_rgba(16,185,129,0.35)] whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer"
                 >
-                  <span>Calculate Your Leaked Commission (Free 60s Audit)</span>
+                  <span>Audit Your Leaked GCI (Free 90-Day Written Audit)</span>
                   <ArrowRight className="w-4 h-4 shrink-0" />
-                </a>
+                </button>
 
                 <a
                   href="#infrastructure"
@@ -147,30 +145,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAsyncModal }) =>
                 </a>
               </div>
 
-              {/* Secondary Architecture Call Anchor + Guarantee Metadata */}
+              {/* Async No-Call Trust Copy */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-400">
+                <span className="text-emerald-400 font-medium">
+                  100% Written Audit via Email or LinkedIn • Zero Sales Calls
+                </span>
+                <span aria-hidden="true">·</span>
                 <span>Zero GCI split</span>
                 <span aria-hidden="true">·</span>
                 <span>14-day turnkey installation</span>
-                <span aria-hidden="true">·</span>
-                <a
-                  href="#book-call"
-                  className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 font-medium transition-colors"
-                >
-                  Or Book a 15-Min Architecture Call →
-                </a>
-                {onOpenAsyncModal && (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <button
-                      type="button"
-                      onClick={onOpenAsyncModal}
-                      className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-medium transition-colors"
-                    >
-                      Request 90-Day Written Audit
-                    </button>
-                  </>
-                )}
               </div>
             </div>
           </div>

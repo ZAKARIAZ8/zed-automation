@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ArrowRight, ArrowUpRight } from 'lucide-react';
-import { AUDIT_TOOL_URL } from '../utils/commissionCalculator';
+import { ChevronDown, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface FaqItem {
   id: string;
@@ -130,30 +129,27 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
             </h2>
 
             <p className="text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              See exactly how much GCI your brokerage is leaking every month—and how our 24/7 Speed-to-Lead &amp; Database Reactivation infrastructure locks those closings back onto your calendar in 14 days.
+              See exactly how much GCI your brokerage is leaking every month—and receive a line-by-line written audit showing how our 24/7 Speed-to-Lead &amp; Database Reactivation infrastructure locks those closings back onto your calendar in 14 days.
             </p>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href={AUDIT_TOOL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_35px_rgba(16,185,129,0.4)] whitespace-nowrap shrink-0"
+            <div className="pt-2 flex flex-col items-center justify-center gap-4">
+              <button
+                type="button"
+                onClick={() => onOpenAsyncModal?.()}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-bold text-[#090A0F] bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all duration-150 shadow-[0_0_35px_rgba(16,185,129,0.4)] whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <span>Run Your Free Commission Audit Now</span>
                 <ArrowRight className="w-4 h-4 shrink-0" />
-              </a>
+              </button>
 
-              <a
-                href="#book-call"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-sm font-semibold text-slate-200 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors whitespace-nowrap shrink-0"
-              >
-                <span>Book a 15-Min Architecture Call</span>
-              </a>
+              <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400">
+                <ShieldCheck className="w-4 h-4 shrink-0" />
+                <span>100% Written Audit via Email or LinkedIn • Zero Sales Calls</span>
+              </div>
             </div>
           </div>
 
-          {/* Quiet Footer Bottom Bar */}
+          {/* Quiet Footer Bottom Bar (No external link to delivery tool) */}
           <div className="pt-10 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-slate-400">
             <div className="flex items-center gap-3">
               <span
@@ -171,23 +167,17 @@ export const FaqAndFooterSection: React.FC<FaqAndFooterSectionProps> = ({
               <a href="#problem" className="hover:text-white transition-colors">
                 The Problem
               </a>
+              <a href="#calculator" className="hover:text-white transition-colors">
+                ROI Calculator
+              </a>
               <a href="#infrastructure" className="hover:text-white transition-colors">
                 AI Infrastructure
-              </a>
-              <a href="#roi-audit" className="hover:text-white transition-colors">
-                Live ROI Audit
               </a>
               <a href="#case-studies" className="hover:text-white transition-colors">
                 Case Studies
               </a>
-              <a
-                href={AUDIT_TOOL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center gap-1"
-              >
-                <span>Commission Audit Tool</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
+              <a href="#faq" className="hover:text-white transition-colors">
+                FAQ
               </a>
             </div>
 
